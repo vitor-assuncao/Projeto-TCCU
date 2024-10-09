@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(cors());
@@ -52,6 +54,42 @@ app.get('/api/produtos/search', (req, res) => {
     });
 });
 
+// Rota para registro de usuário
+app.post('/api/usuarios/register', async (req, res) => {
+    const { nome, email, senha } = req.body;
+    const hashedPassword = await bcrypt.hash(senha, 10); // Hash da senha
+    const sql = 'INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)';
+    db.query(sql, [nome, email, hashedPassword], (err, result) => {
+        if (err) {
+            console.error('Erro ao registrar usuário:', err);
+            res.status(500).json({ error: 'Erro ao registrar usuário' });
+        } else {
+            res.status(201).json({ message: 'Usuário registrado com sucesso' });
+        }
+    });
+});
+
+// Rota para login de usuário
+app.post('/api/usuarios/login', (req, res) => {
+    const { email, senha } = req.body;
+    const sql = 'SELECT * FROM Usuario WHERE email = ?';
+    db.query(sql, [email], async (err, results) => {
+        if (err || results.length === 0) {
+            return res.status(400).json({ error: 'Credenciais inválidas' });
+        }
+
+        const user = results[0];
+        const match = await bcrypt.compare(senha, user.senha); // Verifica a senha
+
+        if (!match) {
+            return res.status(400).json({ error: 'Credenciais inválidas' });
+        }
+
+        // Gera um token JWT
+        const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
+        res.json({ token, user: { id: user.id, nome: user.nome, email: user.email } });
+    });
+});
 
 // Iniciar o servidor
 app.listen(3000, () => {
