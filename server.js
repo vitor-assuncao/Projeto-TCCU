@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -26,32 +27,12 @@ db.connect((err) => {
     console.log('Conectado ao banco de dados');
 });
 
-// Rota para inserir um produto
-app.post('/api/produtos', (req, res) => {
-    const { nome, descricao, preco, estoque } = req.body;
-    const sql = 'INSERT INTO Produto (nome, descricao, preco, estoque) VALUES (?, ?, ?, ?)';
-    db.query(sql, [nome, descricao, preco, estoque], (err, result) => {
-        if (err) {
-            console.error('Erro ao inserir produto:', err);
-            res.status(500).json({ error: 'Erro ao inserir produto' });
-        } else {
-            res.status(200).json({ message: 'Produto inserido com sucesso' });
-        }
-    });
-});
+// Servir arquivos estáticos da pasta 'view' (CSS, JS, imagens)
+app.use(express.static(path.join(__dirname, 'view')));
 
-// Rota para buscar produtos com base no nome
-app.get('/api/produtos/search', (req, res) => {
-    const { nome } = req.query; // Pega o parâmetro de busca na query string
-    const sql = 'SELECT * FROM Produto WHERE nome LIKE ?'; // SQL para buscar produtos que contenham o nome
-    db.query(sql, [`%${nome}%`], (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar produtos:', err);
-            res.status(500).json({ error: 'Erro ao buscar produtos' });
-        } else {
-            res.status(200).json(results); // Retorna os produtos encontrados
-        }
-    });
+// Servir o arquivo HTML principal diretamente da raiz
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html')); // Arquivo HTML na raiz do projeto
 });
 
 // Rota para registro de usuário
@@ -88,6 +69,34 @@ app.post('/api/usuarios/login', (req, res) => {
         // Gera um token JWT
         const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
         res.json({ token, user: { id: user.id, nome: user.nome, email: user.email } });
+    });
+});
+
+// Rota para inserir um produto
+app.post('/api/produtos', (req, res) => {
+    const { nome, descricao, preco, estoque } = req.body;
+    const sql = 'INSERT INTO Produto (nome, descricao, preco, estoque) VALUES (?, ?, ?, ?)';
+    db.query(sql, [nome, descricao, preco, estoque], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir produto:', err);
+            res.status(500).json({ error: 'Erro ao inserir produto' });
+        } else {
+            res.status(200).json({ message: 'Produto inserido com sucesso' });
+        }
+    });
+});
+
+// Rota para buscar produtos com base no nome
+app.get('/api/produtos/search', (req, res) => {
+    const { nome } = req.query; // Pega o parâmetro de busca na query string
+    const sql = 'SELECT * FROM Produto WHERE nome LIKE ?'; // SQL para buscar produtos que contenham o nome
+    db.query(sql, [`%${nome}%`], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produtos:', err);
+            res.status(500).json({ error: 'Erro ao buscar produtos' });
+        } else {
+            res.status(200).json(results); // Retorna os produtos encontrados
+        }
     });
 });
 

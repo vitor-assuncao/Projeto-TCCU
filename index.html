@@ -4,45 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marketplace</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .auth, .produtos {
-            margin: 20px;
-        }
-        .product-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-        }
-    </style>
+    <!-- Incluindo a biblioteca de ícones do Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;700&display=swap">
+    <link rel="stylesheet" href="view/styles.css">
 </head>
 <body>
     <!-- Header com logo e barra de navegação -->
     <header class="top-header">
-        <div>
+        <div class="header-content">
+            <!-- Logo -->
             <div class="logo">
                 <h1>CHE</h1>
             </div>
+
+            <!-- Barra de Pesquisa -->
             <div class="search-bar">
-                <input type="text" placeholder="Hinted search text">
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <img src="view/icons/Leading-icon.png" alt="Leading Icon" class="leading-icon">
+                <input type="text" id="searchInput" placeholder="Buscar produtos...">
+                <button onclick="searchProducts()"><img src="view/icons/Trailing-Elements.png" alt="Lupa"></button>
             </div>
+
+            <!-- Ícones do Header -->
             <div class="header-icons">
-                <a href="#"><i class="fa fa-phone"></i></a>
-                <a href="#"><i class="fa fa-user"></i></a>
-                <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                <a href="#"><img src="view/icons/Phone.png" alt="Phone"></a>
+                <a href="#"><img src="view/icons/User.png" alt="User"></a>
+                <a href="#"><img src="view/icons/Shopping cart.png" alt="Cart"></a>                
             </div>
         </div>
-    </header>>
+    </header>
+
     <!-- Hero Section com a imagem de banner -->
     <section class="hero">
         <div class="hero-banner">
             <img src="view/BANNER DOS CRIADOS.png" alt="Preços Fora da Galáxia">
         </div>
+    </section>
 
-    <h1>Marketplace</h1>
+    <section class="promo-text">
+        <p>Veja nossos melhores</p>
+        <p><strong>PERIFÉRICOS</strong></p> 
+    </section>
 
     <!-- Seção de Registro e Login -->
     <section class="auth">
@@ -63,7 +65,6 @@
     </section>
 
     <!-- Seção de Cadastro de Produtos -->
-    <!-- Seção de Produtos -->
     <section class="produtos">
         <h2>Cadastro de Produtos</h2>
         <form id="productForm">
@@ -73,128 +74,10 @@
             <input type="number" id="estoqueProduto" placeholder="Estoque" required>
             <button type="submit">Cadastrar Produto</button>
         </form>
-        
-        <h2>Busca de Produtos</h2>
-        <input type="text" id="searchInput" placeholder="Buscar produtos...">
-        <button onclick="searchProducts()">Buscar</button>
-        
+
         <div id="productGrid"></div>
     </section>
 
-    <script>
-        // Função para registrar um usuário
-        async function registerUser(event) {
-            event.preventDefault();
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/usuarios/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, senha }),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Usuário registrado com sucesso!');
-                    document.getElementById('registerForm').reset();
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                console.error('Erro ao registrar usuário:', error);
-            }
-        }
-
-        // Função para fazer login
-        async function loginUser(event) {
-            event.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const senha = document.getElementById('loginSenha').value;
-
-            try {
-                const response = await fetch('http://localhost:3000/api/usuarios/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha }),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Login realizado com sucesso!');
-                    localStorage.setItem('token', data.token); // Armazena o token JWT
-                    document.getElementById('loginForm').reset();
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                console.error('Erro ao fazer login:', error);
-            }
-        }
-
-        // Função para cadastrar um produto
-        async function registerProduct(event) {
-            event.preventDefault();
-            const nome = document.getElementById('nomeProduto').value;
-            const descricao = document.getElementById('descricaoProduto').value;
-            const preco = parseFloat(document.getElementById('precoProduto').value);
-            const estoque = parseInt(document.getElementById('estoqueProduto').value);
-
-            try {
-                const response = await fetch('http://localhost:3000/api/produtos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, descricao, preco, estoque }),
-                });
-
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Produto cadastrado com sucesso!');
-                    document.getElementById('productForm').reset();
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                console.error('Erro ao cadastrar produto:', error);
-            }
-        }
-
-        // Função para buscar produtos com base no nome
-        async function searchProducts() {
-            const searchQuery = document.getElementById('searchInput').value; // Pega o valor do campo de busca
-
-            try {
-                const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${searchQuery}`);
-                const products = await response.json();
-                const productGrid = document.getElementById('productGrid');
-                productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
-
-                if (products.length === 0) {
-                    productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
-                } else {
-                    products.forEach(product => {
-                        const productItem = document.createElement('div');
-                        productItem.className = 'product-item';
-                        productItem.innerHTML = `
-                            <h3>${product.nome}</h3>
-                            <p>${product.descricao}</p>
-                            <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                            <p>Estoque: ${product.estoque}</p>
-                        `;
-                        productGrid.appendChild(productItem);
-                    });
-                }
-            } catch (error) {
-                console.error('Erro ao buscar produtos:', error);
-            }
-        }
-
-        // Event listeners para os formulários
-        document.getElementById('registerForm').addEventListener('submit', registerUser);
-        document.getElementById('loginForm').addEventListener('submit', loginUser);
-        document.getElementById('productForm').addEventListener('submit', registerProduct);
-    </script>
+    <script src="view/script.js"></script>
 </body>
 </html>
