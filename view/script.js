@@ -1,6 +1,8 @@
 // Função para registrar um usuário
+// Função para registrar um usuário
 async function registerUser(event) {
-    event.preventDefault();
+    event.preventDefault(); // Impede o comportamento padrão do formulário
+
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
@@ -15,7 +17,7 @@ async function registerUser(event) {
         const data = await response.json();
         if (response.ok) {
             alert('Usuário registrado com sucesso!');
-            document.getElementById('registerForm').reset();
+            document.getElementById('registerForm').reset(); // Limpa o formulário
         } else {
             alert(data.error);
         }
@@ -107,8 +109,33 @@ async function searchProducts() {
     }
 }
 
-// Event listeners para os formulários
-document.getElementById('registerForm').addEventListener('submit', registerUser);
-document.getElementById('loginForm').addEventListener('submit', loginUser);
-document.getElementById('productForm').addEventListener('submit', registerProduct);
-document.getElementById('searchButton').addEventListener('click', searchProducts);
+// Verifica se o DOM foi completamente carregado antes de registrar os event listeners
+document.addEventListener("DOMContentLoaded", function () {
+    const userIcon = document.getElementById("userIcon");
+    const userModal = document.getElementById("userModal");
+
+    // Verifica se o formulário de registro existe
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        // Adiciona um listener para o evento de submit no formulário de registro
+        registerForm.addEventListener('submit', registerUser);
+    }
+
+    // Verifica se o ícone do usuário existe
+    if (userIcon) {
+        userIcon.addEventListener("click", function (event) {
+            event.preventDefault(); // Evita o comportamento de link padrão
+            console.log("Ícone de usuário clicado!");
+            userModal.classList.toggle("hidden");
+        });
+
+        // Fecha o modal ao clicar fora dele
+        window.addEventListener("click", function (event) {
+            if (!userModal.contains(event.target) && !userIcon.contains(event.target)) {
+                userModal.classList.add("hidden");
+            }
+        });
+    } else {
+        console.error("O elemento userIcon não foi encontrado. Verifique o ID no HTML.");
+    }
+});

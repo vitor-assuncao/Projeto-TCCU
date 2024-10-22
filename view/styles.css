@@ -156,3 +156,93 @@ footer {
 .promo-text strong {
     font-weight: bold;
 }
+
+/* Modal estilo */
+/* Estilo do modal */
+/* Estilo do modal */
+/* Estilo do modal */
+.modal {
+    position: absolute;
+    top: 95px; /* A distância do topo */
+    left: 71%; /* Centraliza em relação à tela */
+    transform: translateX(-50%); /* Move o modal para o centro */
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 250px; /* Largura do modal */
+    z-index: 1000;
+}
+
+/* Estilo dos inputs dentro do modal */
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Estilo dos labels no cantinho */
+.modal label {
+    margin-bottom: 5px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+    text-align: left; /* Alinha o texto do label à esquerda */
+    margin-left: 0; /* Remove qualquer margem à esquerda */
+}
+
+/* Estilo para o checkbox */
+.modal input[type="checkbox"] {
+    margin-left: 0; /* Garante que o checkbox fique alinhado à esquerda */
+    margin-right: 5px; /* Adiciona um espaçamento entre o checkbox e o texto */
+    vertical-align: middle; /* Alinha o checkbox verticalmente ao centro com o texto */
+    display: inline-block;
+}
+
+/* Alinha o label do checkbox ao lado do próprio checkbox */
+.modal label[for="checkbox"] {
+    display: inline-block; /* Para alinhar o label ao lado do checkbox */
+    margin-bottom: 0; /* Remove o espaço abaixo do label */
+}
+/* Estilo do botão dentro do modal */
+.modal button {
+    width: 100%;
+    background-color: black; /* Define a cor de fundo preta */
+    color: white; /* Define a cor do texto */
+    padding: 10px;
+    border: none; /* Remove a borda */
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Estilo do botão ao passar o mouse */
+.modal button:hover {
+    background-color: #333; /* Altera a cor de fundo ao passar o mouse */
+    color: white; /* Cor do texto ao passar o mouse */
+}
+
+/* Classe para ocultar o modal */
+.hidden {
+    display: none;
+}
+
+.header-icons button {
+    background-color: transparent; /* Remove o fundo */
+    border: none; /* Remove a borda */
+    padding: 0; /* Remove o espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer (mãozinha) */
+}
+
+#modalForm {
+    font-family: 'Inter', sans-serif;
+}
+
+#modalForm input,
+#modalForm label,
+#modalForm button {
+    font-family: 'Inter', sans-serif;
+}
