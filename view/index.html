@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace</title>
+    <!-- Incluindo a biblioteca de ícones do Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- Caminho para o arquivo CSS -->
+</head>
+<body>
+    <!-- Header com logo e barra de navegação -->
+    <header class="top-header">
+        <div class="header-content">
+            <!-- Logo -->
+            <div class="logo">
+                <h1>CHE</h1>
+            </div>
+
+            <!-- Barra de Pesquisa -->
+            <div class="search-bar">
+                <img src="icons/Leading-icon.png" alt="Leading Icon" class="leading-icon">
+                <input type="text" id="searchInput" placeholder="Buscar produtos...">
+                <button onclick="searchProducts()"><img src="icons/Trailing-Elements.png" alt="Lupa"></button>
+            </div>
+
+            <!-- Ícones do Header -->
+            <div class="header-icons">
+                <a href="#"><img src="icons/Phone.png" alt="Phone"></a>
+                <button id="userIcon"><img src="icons/User.png" alt="User"></button>
+                <a href="#"><img src="icons/Shopping cart.png" alt="Cart"></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal de Cadastro -->
+    <div id="userModal" class="modal hidden">
+        <form id="registerForm"> <!-- Verifique que o ID está correto -->
+            <!-- Campo Nome -->
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" placeholder="Nome" required>
+    
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" required>
+    
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Senha" required>
+    
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+    
+
+    <!-- Hero Section com a imagem de banner -->
+    <section class="hero">
+        <div class="hero-banner">
+            <img src="icons/BANNER DOS CRIADOS.png" alt="Preços Fora da Galáxia">
+        </div>
+    </section>
+
+    <section class="promo-text">
+        <p>Veja nossos melhores</p>
+        <p><strong>PERIFÉRICOS</strong></p> 
+    </section>
+
+    <!-- Script externo -->
+    <script src="script.js"></script> <!-- Script no final do body -->
+
+</body>
+</html>

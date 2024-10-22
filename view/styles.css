@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
 /* Estilos globais */
 * {
     margin: 0;
@@ -7,186 +9,131 @@
 
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #9bcf63; /* Alterei o fundo para branco */
+    background-color: #f0f0f0;
 }
 
-/* Primeiro header (logo, barra de pesquisa, ícones) */
+/* Header */
 .top-header {
-    background-color: #ffffff;
-    padding: 0.5rem 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: visible; /* Permite que o conteúdo ultrapasse a altura */
-}
-
-.top-header nav {
+    background-color: rgba(155, 207, 99, 0.85); /* Cor de fundo com 85% de opacidade */
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 85%;
-    max-height: 100px; /* Define a altura máxima do header */
+    position: fixed;
+    top: 0;
+    width: 90%;
+    max-width: 1500px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 110px;
+    z-index: 1000;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+/* Ajuste do layout */
+.header-content {
+    width: 90%;
+    max-width: 1500px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.top-header .logo {
-    position: relative; /* Permite ajustar o tamanho da logo sem afetar o header */
+/* Logo */
+.logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.top-header .logo img {
-    height: 150px; /* Aumenta o tamanho da logo */
-    width: auto;
-    position: relative;
-    z-index: 1; /* Garante que a logo seja visível por cima de outros elementos */
+.logo h1 {
+    font-family: 'Lilita One', sans-serif;
+    font-size: 76px; /* Tamanho da fonte */
+    font-weight: 400; /* Regular */
+    letter-spacing: 0; /* Espaçamento de letras em 0% */
+    color: #000;
+    margin-left: 3rem; /* Aumente este valor para mover o "CHE" mais para a direita */
 }
 
 .search-bar {
-    flex-grow: 2;
-    display: flex;
-    justify-content: center;
+    position: relative; /* Para posicionar a imagem dentro da barra */
+    flex: 2;
+    display: flex;  
     align-items: center;
-    margin-left: 20px;
+    justify-content: center;
 }
 
 .search-bar input {
     width: 100%;
-    max-width: 600px; /* Tamanho da barra de pesquisa ajustado */
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+    background-color: rgba(155, 207, 99, 0.85);
+    max-width: 1000px;
+    padding: 0.8rem;
+    padding-left: 3rem; /* Aumente este valor para mover o texto mais à direita */
+    border: 3px solid #000;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    outline: none;
 }
+
+.search-bar .leading-icon {
+    position: absolute;
+    left: 8px; /* Posição à esquerda do input */
+}
+
 
 .search-bar button {
-    background-color: #9bcf63; /* Botão de pesquisa com cor verde */
+    background-color: transparent;
     border: none;
-    padding: 1rem 1rem;
-    margin-left: -45px;
     cursor: pointer;
-    font-size: 1rem;
-    border-radius: 0 4px 4px 0;
+    font-size: 1.2rem;
+    color: #000;
+    margin-left: -55px; /* Movendo o botão de lupa para a esquerda */
 }
 
-.search-bar button i {
-    color: white;
+.search-bar button img {
+    display: block;
+
 }
 
+/* Ícones */
 .header-icons {
+    flex: 1;
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 3rem; /* Mantém o espaçamento entre os ícones */
+    margin-right: 5rem; /* Move os ícones mais para a esquerda */
+}
+
+.header-icons a img {
+    width: 40px; /* Diminuindo o tamanho dos ícones */
+    height: 40px;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-.header-icons a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    margin-left: 1.5rem;
-}
-
-.header-icons .cart i {
-    font-size: 1.5rem;
-    color: #9bcf63; /* Ícone do carrinho com verde */
-}
-
-/* Linha de separação entre os dois headers */
-.separator-line {
-    width: 100%;
-    border-top: 1px solid #ccc; /* Borda superior leve e cinza clara */
-    background-color: #ffffff; /* Fundo branco para remover o verde */
-    height: 1px; /* Ajuste a altura da linha */
-    margin: 0; /* Remove qualquer margem extra */
-    padding: 0;
-}
-
-
-/* Segundo header (menu de navegação) */
-.menu-header {
-    background-color: #ffffff; /* Fundo branco para o menu header */
-    padding: 0.5rem 0; /* Diminuído o padding */
-}
-
-.menu-header .menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-}
-
-.menu-header .menu li {
-    margin-left: 1.5rem;
-}
-
-.menu-header .menu li a {
-    color: #9bcf63; /* Cor verde para os links de navegação */
-    text-decoration: none;
-    font-weight: bold;
-}
 
 /* Hero Section */
 .hero {
-    background-image: url('hero-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    color: #fff;
-    height: 70vh;
+    margin-top: 110px; /* Espaço compensado para o header fixo */
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    height: 70vh;
+    margin-bottom: 0;
 }
 
-.hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+.hero-banner img {
+    width: 100%; /* Mantém a largura total */
+    height: auto; /* Ajusta a altura proporcionalmente */
+    object-fit: cover; /* Mantém a imagem ajustada */
+    margin-top: -100px; /* Mova o banner para cima ajustando o valor conforme necessário */
+    display: block;
 }
 
-.hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.cta {
-    padding: 0.75rem 1.5rem;
-    background-color: #ff6f61;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-.cta:hover {
-    background-color: #ff4f3a;
-}
-
-/* Grid de produtos */
-.products {
-    padding: 2rem 0;
-    text-align: center;
-}
-
-.products h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-}
-
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    width: 90%;
-    margin: 0 auto;
-}
-
-.product-item {
-    background-color: #f4f4f4;
-    padding: 1rem;
-    border-radius: 10px;
-}
-
-.product-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-}
 
 /* Footer */
 footer {
@@ -195,4 +142,107 @@ footer {
     text-align: center;
     padding: 1rem 0;
     margin-top: 2rem;
+}
+
+.promo-text {
+    font-family: 'Source Serif Pro', serif;
+    text-align: center;
+    margin-top: 93px; /* Aumente a margem superior para movê-lo mais para baixo */
+    font-size: 1.4rem;
+    color: #000;
+    padding: 1rem; 
+}
+
+.promo-text strong {
+    font-weight: bold;
+}
+
+/* Modal estilo */
+/* Estilo do modal */
+/* Estilo do modal */
+/* Estilo do modal */
+.modal {
+    position: absolute;
+    top: 95px; /* A distância do topo */
+    left: 71%; /* Centraliza em relação à tela */
+    transform: translateX(-50%); /* Move o modal para o centro */
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 250px; /* Largura do modal */
+    z-index: 1000;
+}
+
+/* Estilo dos inputs dentro do modal */
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Estilo dos labels no cantinho */
+.modal label {
+    margin-bottom: 5px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+    text-align: left; /* Alinha o texto do label à esquerda */
+    margin-left: 0; /* Remove qualquer margem à esquerda */
+}
+
+/* Estilo para o checkbox */
+.modal input[type="checkbox"] {
+    margin-left: 0; /* Garante que o checkbox fique alinhado à esquerda */
+    margin-right: 5px; /* Adiciona um espaçamento entre o checkbox e o texto */
+    vertical-align: middle; /* Alinha o checkbox verticalmente ao centro com o texto */
+    display: inline-block;
+}
+
+/* Alinha o label do checkbox ao lado do próprio checkbox */
+.modal label[for="checkbox"] {
+    display: inline-block; /* Para alinhar o label ao lado do checkbox */
+    margin-bottom: 0; /* Remove o espaço abaixo do label */
+}
+/* Estilo do botão dentro do modal */
+.modal button {
+    width: 100%;
+    background-color: black; /* Define a cor de fundo preta */
+    color: white; /* Define a cor do texto */
+    padding: 10px;
+    border: none; /* Remove a borda */
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Estilo do botão ao passar o mouse */
+.modal button:hover {
+    background-color: #333; /* Altera a cor de fundo ao passar o mouse */
+    color: white; /* Cor do texto ao passar o mouse */
+}
+
+/* Classe para ocultar o modal */
+.hidden {
+    display: none;
+}
+
+.header-icons button {
+    background-color: transparent; /* Remove o fundo */
+    border: none; /* Remove a borda */
+    padding: 0; /* Remove o espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer (mãozinha) */
+}
+
+#modalForm {
+    font-family: 'Inter', sans-serif;
+}
+
+#modalForm input,
+#modalForm label,
+#modalForm button {
+    font-family: 'Inter', sans-serif;
 }
