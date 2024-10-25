@@ -1,11 +1,15 @@
-// Função para registrar um usuário
-// Função para registrar um usuário
 async function registerUser(event) {
     event.preventDefault(); // Impede o comportamento padrão do formulário
 
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
+
+    // Verifica se os campos não estão vazios antes de enviar
+    if (!nome || !email || !senha) {
+        alert('Por favor, preencha todos os campos!');
+        return;
+    }
 
     try {
         const response = await fetch('http://localhost:3000/api/usuarios/register', {
@@ -19,18 +23,25 @@ async function registerUser(event) {
             alert('Usuário registrado com sucesso!');
             document.getElementById('registerForm').reset(); // Limpa o formulário
         } else {
-            alert(data.error);
+            alert(data.error || 'Erro ao registrar usuário.');
         }
     } catch (error) {
         console.error('Erro ao registrar usuário:', error);
+        alert('Erro ao registrar usuário.');
     }
 }
 
-// Função para fazer login
 async function loginUser(event) {
     event.preventDefault();
+
     const email = document.getElementById('loginEmail').value;
     const senha = document.getElementById('loginSenha').value;
+
+    // Verifica se os campos não estão vazios
+    if (!email || !senha) {
+        alert('Por favor, preencha todos os campos!');
+        return;
+    }
 
     try {
         const response = await fetch('http://localhost:3000/api/usuarios/login', {
@@ -45,97 +56,87 @@ async function loginUser(event) {
             localStorage.setItem('token', data.token); // Armazena o token JWT
             document.getElementById('loginForm').reset();
         } else {
-            alert(data.error);
+            alert(data.error || 'Erro ao fazer login.');
         }
     } catch (error) {
         console.error('Erro ao fazer login:', error);
+        alert('Erro ao fazer login.');
     }
 }
 
-// Função para cadastrar um produto
-async function registerProduct(event) {
-    event.preventDefault();
-    const nome = document.getElementById('nomeProduto').value;
-    const descricao = document.getElementById('descricaoProduto').value;
-    const preco = parseFloat(document.getElementById('precoProduto').value);
-    const estoque = parseInt(document.getElementById('estoqueProduto').value);
 
-    try {
-        const response = await fetch('http://localhost:3000/api/produtos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, descricao, preco, estoque }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            alert('Produto cadastrado com sucesso!');
-            document.getElementById('productForm').reset();
-        } else {
-            alert(data.error);
-        }
-    } catch (error) {
-        console.error('Erro ao cadastrar produto:', error);
-    }
-}
-
-// Função para buscar produtos com base no nome
-async function searchProducts() {
-    const searchQuery = document.getElementById('searchInput').value; // Pega o valor do campo de busca
-
-    try {
-        const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${searchQuery}`);
-        const products = await response.json();
-        const productGrid = document.getElementById('productGrid');
-        productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
-
-        if (products.length === 0) {
-            productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
-        } else {
-            products.forEach(product => {
-                const productItem = document.createElement('div');
-                productItem.className = 'product-item';
-                productItem.innerHTML = `
-                    <h3>${product.nome}</h3>
-                    <p>${product.descricao}</p>
-                    <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                    <p>Estoque: ${product.estoque}</p>
-                `;
-                productGrid.appendChild(productItem);
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
-    }
+// Função para alternar modais de login e registro
+function toggleModal(modalToShow, modalToHide) {
+    modalToHide.classList.add('hidden');
+    modalToShow.classList.remove('hidden');
 }
 
 // Verifica se o DOM foi completamente carregado antes de registrar os event listeners
 document.addEventListener("DOMContentLoaded", function () {
     const userIcon = document.getElementById("userIcon");
-    const userModal = document.getElementById("userModal");
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
 
-    // Verifica se o formulário de registro existe
+    // Referência aos links para alternar entre login e cadastro
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    const showLoginLink = document.getElementById('showLoginLink');
+
+    // Referência ao formulário de registro
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
-        // Adiciona um listener para o evento de submit no formulário de registro
         registerForm.addEventListener('submit', registerUser);
     }
 
-    // Verifica se o ícone do usuário existe
-    if (userIcon) {
-        userIcon.addEventListener("click", function (event) {
-            event.preventDefault(); // Evita o comportamento de link padrão
-            console.log("Ícone de usuário clicado!");
-            userModal.classList.toggle("hidden");
-        });
+    // Referência ao formulário de login
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', loginUser);
+    }
 
-        // Fecha o modal ao clicar fora dele
-        window.addEventListener("click", function (event) {
-            if (!userModal.contains(event.target) && !userIcon.contains(event.target)) {
-                userModal.classList.add("hidden");
-            }
+    // Evento para abrir o modal de login ao clicar no ícone de usuário
+    if (userIcon && loginModal) {
+        userIcon.addEventListener("click", function () {
+            loginModal.classList.toggle("hidden");
         });
-    } else {
-        console.error("O elemento userIcon não foi encontrado. Verifique o ID no HTML.");
+    }
+
+    // Alternar para o modal de registro
+    if (showRegisterLink && loginModal && registerModal) {
+        showRegisterLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleModal(registerModal, loginModal);
+        });
+    }
+
+    // Alternar para o modal de login
+    if (showLoginLink && loginModal && registerModal) {
+        showLoginLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleModal(loginModal, registerModal);
+        });
+    }
+
+    // Fechar os modais ao clicar fora deles
+    window.addEventListener('click', function (event) {
+        if (loginModal && !loginModal.contains(event.target) && !userIcon.contains(event.target)) {
+            loginModal.classList.add('hidden');
+        }
+
+        if (registerModal && !registerModal.contains(event.target)) {
+            registerModal.classList.add('hidden');
+        }
+    });
+
+    // Prevenir que o clique dentro do modal feche o modal
+    if (loginModal) {
+        loginModal.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    }
+
+    if (registerModal) {
+        registerModal.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
     }
 });

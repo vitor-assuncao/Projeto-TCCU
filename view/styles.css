@@ -162,8 +162,8 @@ footer {
 /* Estilo do modal */
 /* Estilo do modal */
 .modal {
-    position: absolute;
-    top: 95px; /* A distância do topo */
+    position: fixed;
+    top: 102px; /* A distância do topo */
     left: 71%; /* Centraliza em relação à tela */
     transform: translateX(-50%); /* Move o modal para o centro */
     background-color: white;
@@ -173,6 +173,8 @@ footer {
     width: 250px; /* Largura do modal */
     z-index: 1000;
 }
+
+
 
 /* Estilo dos inputs dentro do modal */
 .modal input {
@@ -245,4 +247,48 @@ footer {
 #modalForm label,
 #modalForm button {
     font-family: 'Inter', sans-serif;
+}
+
+.polygon-icon {
+    position: fixed;
+    top: -20px; /* Ajuste a posição de acordo com a necessidade */
+    right: 39px;
+    width: 30px; /* Tamanho da imagem */
+    height: auto;
+    z-index: 1001; /* Certifique-se de que a imagem fique na frente */
+    color: white;
+}
+
+/* Aplicar a fonte Inter para todos os elementos dentro do modal de Login e Cadastro */
+#loginModal,
+#registerModal {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Caso precise aplicar em labels, inputs e buttons */
+#loginModal input,
+#loginModal label,
+#loginModal button,
+#registerModal input,
+#registerModal label,
+#registerModal button {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Diminuir o tamanho do texto "Não tem uma conta? Cadastre-se" e "Já tem uma conta? Entrar" */
+#loginModal p a,
+#registerModal p a {
+    font-size: 0.7rem; /* Define o tamanho da fonte */
+    color: #000; /* Cor do texto */
+    font-weight: bold;
+    text-align: center; /* Centraliza o texto dentro do link */
+}
+
+/* Centralizar e ajustar o espaçamento do parágrafo */
+#loginModal p,
+#registerModal p {
+    font-size: 0.7rem; /* Define o tamanho da fonte */
+    margin-top: 10px; /* Espaçamento superior */
+    text-align: center; 
+    width: 100%; 
 }
