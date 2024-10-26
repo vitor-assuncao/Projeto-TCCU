@@ -156,42 +156,25 @@ function inserirProdutoCarrinho(carrinhoId, produtoId, res) {
 app.delete('/api/carrinho/remover', (req, res) => {
     const { usuarioId, produtoId } = req.body;
 
-    // Validação: Verifique se os valores foram enviados
-    if (!usuarioId || !produtoId) {
-        return res.status(400).json({ error: 'Campos usuarioId e produtoId são obrigatórios' });
-    }
-
     // Verifica se o carrinho do usuário existe
     const checkCarrinhoSql = 'SELECT id FROM Carrinho WHERE usuario_id = ?';
     db.query(checkCarrinhoSql, [usuarioId], (err, results) => {
         if (err || results.length === 0) {
             console.error('Erro ao verificar carrinho ou carrinho não encontrado:', err);
-            return res.status(404).json({ error: 'Carrinho não encontrado para o usuário fornecido' });
+            return res.status(404).json({ error: 'Carrinho não encontrado' });
         }
 
         const carrinhoId = results[0].id;
-
-        // Verifica se o produto existe no carrinho
-        const checkProdutoSql = 'SELECT * FROM Carrinho_Produto WHERE carrinho_id = ? AND produto_id = ?';
-        db.query(checkProdutoSql, [carrinhoId, produtoId], (err, results) => {
-            if (err || results.length === 0) {
-                console.error('Produto não encontrado no carrinho:', err);
-                return res.status(404).json({ error: 'Produto não encontrado no carrinho' });
+        const removeProdutoSql = 'DELETE FROM Carrinho_Produto WHERE carrinho_id = ? AND produto_id = ?';
+        db.query(removeProdutoSql, [carrinhoId, produtoId], (err) => {
+            if (err) {
+                console.error('Erro ao remover produto do carrinho:', err);
+                return res.status(500).json({ error: 'Erro ao remover produto do carrinho' });
             }
-
-            // Remove o produto do carrinho
-            const removeProdutoSql = 'DELETE FROM Carrinho_Produto WHERE carrinho_id = ? AND produto_id = ?';
-            db.query(removeProdutoSql, [carrinhoId, produtoId], (err) => {
-                if (err) {
-                    console.error('Erro ao remover produto do carrinho:', err);
-                    return res.status(500).json({ error: 'Erro ao remover produto do carrinho' });
-                }
-                res.status(200).json({ message: 'Produto removido do carrinho com sucesso' });
-            });
+            res.status(200).json({ message: 'Produto removido do carrinho com sucesso' });
         });
     });
 });
-
 
 
 // Iniciar o servidor
