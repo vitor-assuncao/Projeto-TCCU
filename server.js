@@ -52,6 +52,11 @@ app.post('/api/produtos', (req, res) => {
 // Rota para buscar produtos com base no nome
 app.get('/api/produtos/search', (req, res) => {
     const { nome } = req.query;
+    
+    if (!nome) {
+        return res.status(400).json({ error: 'Parâmetro de busca não fornecido' });
+    }
+
     const sql = 'SELECT * FROM Produto WHERE nome LIKE ?';
     db.query(sql, [`%${nome}%`], (err, results) => {
         if (err) {
@@ -62,6 +67,7 @@ app.get('/api/produtos/search', (req, res) => {
         }
     });
 });
+
 
 // Rota para registro de usuário
 app.post('/api/usuarios/register', async (req, res) => {
