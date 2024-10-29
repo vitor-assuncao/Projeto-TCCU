@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace</title>
+    <title>Mercadinho Ultra CHE</title>
     <!-- Incluindo a biblioteca de ícones do Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;700&display=swap">
@@ -71,7 +71,17 @@
             <p>Já tem uma conta? <a href="#" id="showLoginLink">Entrar</a></p> <!-- Link para login -->
         </form>
     </div>
-    
+
+    <!-- Modal de Usuário Logado -->
+    <div id="loggedInModal" class="modal hidden">
+        <img src="icons/Polygon 1.png" alt="Polygon Icon" class="polygon-icon">
+        <div id="userProfile">
+            <!-- Nome do usuário será atualizado via JavaScript -->
+            <p id="userProfileName">Perfil: Nome do Usuário</p>
+            <a href="#" onclick="openProductForm()">Inserir Produto</a>
+        </div>
+    </div>
+
     
     
 
