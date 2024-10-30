@@ -71,18 +71,19 @@
             <p>Já tem uma conta? <a href="#" id="showLoginLink">Entrar</a></p> <!-- Link para login -->
         </form>
     </div>
-
+    
     <!-- Modal de Usuário Logado -->
     <div id="loggedInModal" class="modal hidden">
         <img src="icons/Polygon 1.png" alt="Polygon Icon" class="polygon-icon">
         <div id="userProfile">
-            <!-- Nome do usuário será atualizado via JavaScript -->
-            <p id="userProfileName">Perfil: Nome do Usuário</p>
-            <a href="#" onclick="openProductForm()">Inserir Produto</a>
+            <div class="profile-info">
+                <img src="icons/User.png" alt="User Icon" class="profile-icon">
+                <p id="userProfileName">Olá, Usuário</p>
+            </div>
+            <button class="product-button" onclick="openProductForm()">VENDER PRODUTO</button>
         </div>
     </div>
 
-    
     
 
     <!-- Hero Section com a imagem de banner -->
