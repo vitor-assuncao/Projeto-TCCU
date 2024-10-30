@@ -292,3 +292,58 @@ footer {
     text-align: center; 
     width: 100%; 
 }
+
+/* Estilo para o modal de usuário logado */
+#loggedInModal {
+    position: fixed;
+    top: 102px;
+    left: 71%;
+    transform: translateX(-50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 250px;
+    z-index: 1000;
+}
+
+/* Estilo para a seção de informações do perfil */
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Para deixar o ícone redondo */
+}
+
+#userProfileName {
+    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo do botão de venda de produto */
+.product-button {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.product-button:hover {
+    background-color: #333;
+    color: white;
+}
+
+
