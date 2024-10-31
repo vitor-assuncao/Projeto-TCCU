@@ -48,6 +48,13 @@ body {
     justify-content: flex-start;
 }
 
+.logo2 {
+    flex: 1;
+    display: center;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .logo h1 {
     font-family: 'Lilita One', sans-serif;
     font-size: 76px; /* Tamanho da fonte */
@@ -346,4 +353,102 @@ footer {
     color: white;
 }
 
+/* Estilos da página de venda de produto */
+.sell-product {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
 
+.form-container {
+    background-color: #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.form-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.form-container label {
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+}
+
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.confirm-button {
+    background-color: #a3d964;
+    border: none;
+    padding: 10px;
+    color: #fff;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.back-button {
+    color: #000;
+    text-decoration: none;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.back-button i {
+    font-size: 16px;
+}
+
+.product-button {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px; /* Adiciona um espaço inferior */
+}
+
+.logout-button {
+    width: 100%;
+    background-color: red; /* Cor para diferenciar (opcional) */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+#userProfileName {
+    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+    white-space: nowrap;       /* Impede quebra de linha */
+    overflow: hidden;          /* Esconde o texto excedente */
+    text-overflow: ellipsis;   /* Adiciona "..." ao final se o texto for muito longo */
+    max-width: 500px;          /* Defina a largura máxima do elemento */
+}

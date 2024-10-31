@@ -23,8 +23,10 @@ async function registerUser(event) {
         if (response.ok) {
             alert('Usuário registrado com sucesso!');
             localStorage.setItem('token', data.token);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userName', nome);
             document.getElementById('registerForm').reset();
-            showLoggedInModal(nome); // Exibe o modal do usuário logado
+            showLoggedInModal(nome);
         } else {
             alert(data.error || 'Erro ao registrar usuário.');
         }
@@ -56,8 +58,10 @@ async function loginUser(event) {
         if (response.ok) {
             alert('Login realizado com sucesso!');
             localStorage.setItem('token', data.token);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userName', data.user.nome);
             document.getElementById('loginForm').reset();
-            showLoggedInModal(data.user.nome); // Exibe o modal do usuário logado
+            showLoggedInModal(data.user.nome);
         } else {
             alert(data.error || 'Erro ao fazer login.');
         }
@@ -67,12 +71,6 @@ async function loginUser(event) {
     }
 }
 
-// Função para alternar a visibilidade entre dois modais
-function toggleModal(modalToShow, modalToHide) {
-    modalToHide.classList.add('hidden');
-    modalToShow.classList.remove('hidden');
-}
-
 // Função para exibir o modal de usuário logado
 function showLoggedInModal(userName) {
     const loginModal = document.getElementById('loginModal');
@@ -80,23 +78,21 @@ function showLoggedInModal(userName) {
     const loggedInModal = document.getElementById('loggedInModal');
     const userProfileName = document.getElementById('userProfileName');
 
-    // Esconde os modais de login e registro
-    loginModal.classList.add('hidden');
-    registerModal.classList.add('hidden');
-
     // Define o estado de login como true
     isLoggedIn = true;
 
     // Atualiza o nome do usuário no modal logado
     userProfileName.textContent = `Perfil: ${userName}`;
 
-    // Exibe o modal de usuário logado
+    // Esconde os modais de login e registro e exibe o modal de usuário logado
+    loginModal.classList.add('hidden');
+    registerModal.classList.add('hidden');
     loggedInModal.classList.remove('hidden');
 }
 
-// Função para abrir o formulário de inserção de produto
+// Função para abrir a página de inserção de produto
 function openProductForm() {
-    alert("Formulário de Inserção de Produto"); // Substitua pelo código para abrir o modal ou a página do formulário
+    window.location.href = "vender_produto.html";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -105,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerModal = document.getElementById('registerModal');
     const loggedInModal = document.getElementById('loggedInModal');
 
-    const showRegisterLink = document.getElementById('showRegisterLink'); // Link "Cadastre-se"
-    const showLoginLink = document.getElementById('showLoginLink'); // Link "Entrar"
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    const showLoginLink = document.getElementById('showLoginLink');
 
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -118,32 +114,42 @@ document.addEventListener("DOMContentLoaded", function () {
         loginForm.addEventListener('submit', loginUser);
     }
 
+    // Verifica se o usuário está logado ao carregar a página
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        const userName = localStorage.getItem('userName');
+        isLoggedIn = true;
+        showLoggedInModal(userName);
+    }
+
+    // Alterna entre mostrar e esconder o modal de usuário logado ao clicar no ícone
     if (userIcon) {
-        userIcon.addEventListener("click", function () {
+        userIcon.addEventListener("click", function (event) {
+            event.stopPropagation();
             if (isLoggedIn) {
-                loggedInModal.classList.toggle("hidden"); // Abre o modal de usuário logado se estiver logado
+                loggedInModal.classList.toggle("hidden");
             } else {
-                loginModal.classList.toggle("hidden"); // Caso contrário, abre o modal de login
+                loginModal.classList.toggle("hidden");
             }
         });
     }
 
-    // Event listener para alternar para o modal de registro ao clicar em "Cadastre-se"
+    // Alterna para o modal de registro ao clicar em "Cadastre-se"
     if (showRegisterLink) {
         showRegisterLink.addEventListener('click', function (e) {
             e.preventDefault();
-            toggleModal(registerModal, loginModal); // Alterna para o modal de cadastro
+            toggleModal(registerModal, loginModal);
         });
     }
 
-    // Event listener para alternar para o modal de login ao clicar em "Entrar"
+    // Alterna para o modal de login ao clicar em "Entrar"
     if (showLoginLink) {
         showLoginLink.addEventListener('click', function (e) {
             e.preventDefault();
-            toggleModal(loginModal, registerModal); // Alterna para o modal de login
+            toggleModal(loginModal, registerModal);
         });
     }
 
+    // Fecha os modais ao clicar fora deles
     window.addEventListener('click', function (event) {
         if (!loginModal.contains(event.target) && !userIcon.contains(event.target)) {
             loginModal.classList.add('hidden');
@@ -151,11 +157,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!registerModal.contains(event.target)) {
             registerModal.classList.add('hidden');
         }
-        if (!loggedInModal.contains(event.target)) {
+        if (isLoggedIn && !loggedInModal.contains(event.target) && !userIcon.contains(event.target)) {
             loggedInModal.classList.add('hidden');
         }
     });
 
+    // Previne o fechamento ao clicar dentro dos modais
     if (loginModal) {
         loginModal.addEventListener('click', function (event) {
             event.stopPropagation();
@@ -167,7 +174,29 @@ document.addEventListener("DOMContentLoaded", function () {
             event.stopPropagation();
         });
     }
+
+    if (loggedInModal) {
+        loggedInModal.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+    }
 });
+
+// Função para alternar a visibilidade entre dois modais
+function toggleModal(modalToShow, modalToHide) {
+    modalToHide.classList.add('hidden');
+    modalToShow.classList.remove('hidden');
+}
+
+// Função para logout
+function logoutUser() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userName');
+    isLoggedIn = false;
+    alert('Você foi deslogado.');
+    window.location.href = 'index.html';
+}
 
 // Função para registrar um produto
 async function registerProduct(event) {
