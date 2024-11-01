@@ -15,7 +15,8 @@ CREATE TABLE Produto (
     nome VARCHAR(255) NOT NULL,
     descricao TEXT,
     preco DOUBLE NOT NULL,
-    estoque INT NOT NULL
+    estoque INT NOT NULL,
+    imagem VARCHAR(255)
 );
 
 -- Tabela Carrinho

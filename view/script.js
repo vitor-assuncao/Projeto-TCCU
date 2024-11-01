@@ -78,6 +78,10 @@ function showLoggedInModal(userName) {
     const loggedInModal = document.getElementById('loggedInModal');
     const userProfileName = document.getElementById('userProfileName');
 
+    if (!loginModal || !registerModal || !loggedInModal || !userProfileName) {
+        return; // Sai da função se qualquer um dos elementos não existir
+    }
+    
     // Define o estado de login como true
     isLoggedIn = true;
 
@@ -149,18 +153,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Fecha os modais ao clicar fora deles
+  // Fecha os modais ao clicar fora deles
     window.addEventListener('click', function (event) {
-        if (!loginModal.contains(event.target) && !userIcon.contains(event.target)) {
-            loginModal.classList.add('hidden');
-        }
-        if (!registerModal.contains(event.target)) {
-            registerModal.classList.add('hidden');
-        }
-        if (isLoggedIn && !loggedInModal.contains(event.target) && !userIcon.contains(event.target)) {
-            loggedInModal.classList.add('hidden');
-        }
-    });
+    if (loginModal && userIcon && !loginModal.contains(event.target) && !userIcon.contains(event.target)) {
+        loginModal.classList.add('hidden');
+    }
+    if (registerModal && !registerModal.contains(event.target)) {
+        registerModal.classList.add('hidden');
+    }
+    if (isLoggedIn && loggedInModal && userIcon && !loggedInModal.contains(event.target) && !userIcon.contains(event.target)) {
+        loggedInModal.classList.add('hidden');
+    }
+});
 
     // Previne o fechamento ao clicar dentro dos modais
     if (loginModal) {
@@ -200,17 +204,27 @@ function logoutUser() {
 
 // Função para registrar um produto
 async function registerProduct(event) {
+    console.log("teste");
     event.preventDefault();
+    
     const nome = document.getElementById('nomeProduto').value;
     const descricao = document.getElementById('descricaoProduto').value;
     const preco = parseFloat(document.getElementById('precoProduto').value);
     const estoque = parseInt(document.getElementById('estoqueProduto').value);
+    const imagem = document.getElementById('imagemProduto').files[0]; // Seleção da imagem
+
+    // FormData para enviar os dados do produto e a imagem
+    const formData = new FormData();
+    formData.append('nome', nome);
+    formData.append('descricao', descricao);
+    formData.append('preco', preco);
+    formData.append('estoque', estoque);
+    formData.append('imagem', imagem); // Adiciona a imagem ao FormData
 
     try {
         const response = await fetch('http://localhost:3000/api/produtos', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, descricao, preco, estoque }),
+            body: formData // Envia o FormData contendo os dados e a imagem
         });
 
         const data = await response.json();
@@ -224,6 +238,14 @@ async function registerProduct(event) {
         console.error('Erro ao cadastrar produto:', error);
     }
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const productForm = document.getElementById("productForm");
+    if (productForm) {
+        productForm.addEventListener("submit", registerProduct);
+    }
+});
 
 // Função de Buscar Produtos
 async function searchProducts() {

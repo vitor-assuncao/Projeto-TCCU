@@ -5,6 +5,7 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const multer = require('multer');
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,17 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(express.static(__dirname));
 
+// Configuração do multer para salvar a imagem na pasta 'uploads'
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Define a pasta onde as imagens serão armazenadas
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Define o nome do arquivo
+    }
+});
+
+const upload = multer({ storage });
 
 // Rota para a página principal
 app.get('/', (req, res) => {
@@ -22,7 +34,7 @@ app.get('/', (req, res) => {
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'root', // Altere para sua senha
+    password: 'batata', // Altere para sua senha
     database: 'Marketplace'
 });
 
@@ -35,11 +47,12 @@ db.connect((err) => {
     console.log('Conectado ao banco de dados');
 });
 
-// Rota para inserir um produto
-app.post('/api/produtos', (req, res) => {
+app.post('/api/produtos', upload.single('imagem'), (req, res) => {
     const { nome, descricao, preco, estoque } = req.body;
-    const sql = 'INSERT INTO Produto (nome, descricao, preco, estoque) VALUES (?, ?, ?, ?)';
-    db.query(sql, [nome, descricao, preco, estoque], (err, result) => {
+    const imagem = req.file ? req.file.path : null; // Caminho da imagem enviada
+
+    const sql = 'INSERT INTO Produto (nome, descricao, preco, estoque, imagem) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [nome, descricao, preco, estoque, imagem], (err, result) => {
         if (err) {
             console.error('Erro ao inserir produto:', err);
             res.status(500).json({ error: 'Erro ao inserir produto' });
@@ -181,7 +194,6 @@ app.delete('/api/carrinho/remover', (req, res) => {
         });
     });
 });
-
 
 // Iniciar o servidor
 app.listen(3000, () => {
