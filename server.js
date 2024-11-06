@@ -12,6 +12,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'view')));
 app.use(express.static(__dirname));
+// Torna a pasta 'uploads' pública para acesso às imagens
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Configuração do multer para salvar a imagem na pasta 'uploads'
 const storage = multer.diskStorage({
@@ -34,7 +36,7 @@ app.get('/', (req, res) => {
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'batata', // Altere para sua senha
+    password: 'root', // Altere para sua senha
     database: 'Marketplace'
 });
 
@@ -194,6 +196,20 @@ app.delete('/api/carrinho/remover', (req, res) => {
         });
     });
 });
+
+// Rota para obter todos os produtos
+app.get('/api/produtos', (req, res) => {
+    const sql = 'SELECT * FROM Produto';
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produtos:', err);
+            res.status(500).json({ error: 'Erro ao buscar produtos' });
+        } else {
+            res.status(200).json(results);
+        }
+    });
+});
+
 
 // Iniciar o servidor
 app.listen(3000, () => {

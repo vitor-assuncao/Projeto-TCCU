@@ -282,3 +282,45 @@ async function searchProducts() {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const productGrid = document.getElementById('productGrid');
+    
+    if (productGrid) {
+        loadProducts();
+    } else {
+        console.error("Elemento productGrid não encontrado.");
+    }
+});
+
+
+async function loadProducts() {
+    try {
+        const response = await fetch('http://localhost:3000/api/produtos');
+        const products = await response.json();
+        const productGrid = document.getElementById('productGrid');
+        productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
+
+        if (products.length === 0) {
+            productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+        } else {
+            products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+                productItem.innerHTML = `
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="/${product.imagem}" alt="${product.nome}" class="product-image"/>
+                    </div>
+                    <h3 class="product-name">${product.nome}</h3>
+                    <p class="product-price">R$ ${product.preco.toFixed(2)}</p>
+                    <button class="buy-button">Comprar</button>
+                </div>
+            `;
+            
+                productGrid.appendChild(productItem);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+    }
+}
