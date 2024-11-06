@@ -91,7 +91,6 @@ function showLoggedInModal(userName) {
     // Esconde os modais de login e registro e exibe o modal de usuário logado
     loginModal.classList.add('hidden');
     registerModal.classList.add('hidden');
-    loggedInModal.classList.remove('hidden');
 }
 
 // Função para abrir a página de inserção de produto
