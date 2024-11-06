@@ -604,3 +604,68 @@ footer {
 .vender-produto .confirm-button:hover {
     background-color: #8fbc50;
 }
+
+.product-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto; /* permite a rolagem horizontal */
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.product-card {
+    background-color: #e0e5c8; /* Cor de fundo semelhante ao anexo 2 */
+    border: 1px solid #b8b8b8;
+    border-radius: 8px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.product-card:hover {
+    transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+}
+
+.product-image-container {
+    background-color: #d1d1d1;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.product-name {
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+.product-price {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.buy-button {
+    background-color: #a5cd99; /* Cor verde semelhante ao botão do modelo */
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.buy-button:hover {
+    background-color: #92b68a;
+}
+

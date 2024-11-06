@@ -51,7 +51,8 @@ db.connect((err) => {
 
 app.post('/api/produtos', upload.single('imagem'), (req, res) => {
     const { nome, descricao, preco, estoque } = req.body;
-    const imagem = req.file ? req.file.path : null; // Caminho da imagem enviada
+    const imagem = req.file ? req.file.path : null;
+    console.log('Dados recebidos para registro de produto:', { nome, descricao, preco, estoque, imagem });
 
     const sql = 'INSERT INTO Produto (nome, descricao, preco, estoque, imagem) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [nome, descricao, preco, estoque, imagem], (err, result) => {
@@ -63,6 +64,7 @@ app.post('/api/produtos', upload.single('imagem'), (req, res) => {
         }
     });
 });
+
 
 // Rota para buscar produtos com base no nome
 app.get('/api/produtos/search', (req, res) => {
