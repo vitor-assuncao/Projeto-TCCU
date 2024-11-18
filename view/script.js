@@ -323,3 +323,4 @@ async function loadProducts() {
         console.error('Erro ao carregar produtos:', error);
     }
 }
+

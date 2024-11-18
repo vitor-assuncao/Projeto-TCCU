@@ -606,66 +606,120 @@ footer {
 }
 
 .product-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto; /* permite a rolagem horizontal */
-    gap: 20px;
+    display: flex; /* Exibe os itens em linha */
+    flex-wrap: nowrap; /* Impede quebra de linha */
+    gap: 40px; /* Aumenta o espaçamento entre os produtos */
+    overflow-x: auto; /* Ativa o scroll horizontal */
     padding: 20px;
-    justify-content: center;
+}
+
+
+
+.product-grid::-webkit-scrollbar {
+    height: 12px; /* Altura da barra de rolagem */
+}
+
+.product-grid::-webkit-scrollbar-track {
+    background: #d3d3d3; /* Fundo da barra */
+}
+
+.product-grid::-webkit-scrollbar-thumb {
+    background-color: #9BCF63; /* Cor do polegar da barra */
+    border-radius: 10px; /* Cantos arredondados */
+    border: 2px solid #d3d3d3; /* Espaço ao redor do polegar */
 }
 
 .product-card {
-    background-color: #e0e5c8; /* Cor de fundo semelhante ao anexo 2 */
-    border: 1px solid #b8b8b8;
-    border-radius: 8px;
-    width: 200px;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #d3d3d3; /* Fundo cinza */
+    border: 2px solid #000; /* Borda preta */
+    border-radius: 10px; /* Cantos arredondados */
+    width: 350px; /* Maior largura do container */
+    padding: 20px; /* Espaçamento interno */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra leve */
     text-align: center;
     transition: transform 0.3s;
+    
+    display: flex; /* Flexbox para organizar os elementos */
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px; /* Espaçamento entre os elementos internos */
 }
+
 
 .product-card:hover {
-    transform: scale(1.05); /* Efeito de zoom ao passar o mouse */
+    transform: scale(1.05); /* Animação de zoom */
 }
+
 
 .product-image-container {
-    background-color: #d1d1d1;
-    padding: 10px;
-    border-radius: 8px;
+    width: 280px; /* Largura ajustada para acompanhar a largura do botão */
+    height: 140px; /* Ajuste proporcional da altura */
+    overflow: hidden;
+    border-radius: 8px; /* Cantos arredondados */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #bfbfbf; /* Cor de fundo para imagens menores */
+    border: 2px solid #000; /* Borda preta */
 }
+
 
 .product-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
+    width: 100%; /* Faz com que a largura preencha o container */
+    height: 100%; /* Faz com que a altura preencha o container */
+    object-fit: cover; /* Faz a imagem se ajustar sem distorção */
 }
 
+/* Nome do produto */
 .product-name {
-    font-weight: bold;
-    color: #333;
-    margin: 10px 0 5px;
+    font-family: 'Source Serif Pro', serif;
+    font-weight: 400; /* Regular */
+    font-size: 1.2rem;
+    color: #000;
+    margin-bottom: -5px; /* Espaçamento mínimo abaixo do título */
+    white-space: nowrap; /* Impede quebra de linha */
+    overflow: hidden; /* Oculta o texto excedente */
+    text-overflow: ellipsis; /* Adiciona "..." ao texto excedente */
+    max-width: 200px; /* Define uma largura máxima */
 }
 
 .product-price {
-    font-size: 1.2em;
-    color: #333;
-    margin-bottom: 10px;
+    font-family: 'Source Serif Pro', serif;
+    font-weight: 700; /* Bold */
+    font-size: 1.4rem;
+    color: #000;
+    margin-top: 1px; /* Espaçamento mínimo acima do preço */
+    white-space: nowrap; /* Impede quebra de linha */
+    overflow: hidden; /* Oculta o texto excedente */
+    text-overflow: ellipsis; /* Adiciona "..." ao texto excedente */
+    max-width: 200px; /* Define uma largura máxima */
 }
+
 
 .buy-button {
-    background-color: #a5cd99; /* Cor verde semelhante ao botão do modelo */
-    border: none;
-    padding: 10px;
-    width: 100%;
-    border-radius: 5px;
-    font-weight: bold;
-    color: #333;
+    font-family: 'Source Serif Pro', serif; /* Fonte desejada */
+    font-weight: 400; /* Regular */
+    font-size: 1rem; /* Tamanho do texto */
+    background-color: #9BCF63; /* Cor verde */
+    border: 2px solid #6BAF42; /* Borda verde */
+    padding: 10px 30px; /* Aumenta o padding horizontal */
+    border-radius: 5px; /* Borda arredondada */
+    width: 280px; /* Largura aumentada */
+    max-width: 280px; /* Impede que o botão cresça além desse valor */
+    color: #000;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s; /* Animações */
+    text-align: center; /* Centraliza o texto no botão */
+    white-space: nowrap; /* Impede que o texto quebre a linha */
+    overflow: hidden; /* Oculta o texto excedente */
+    text-overflow: ellipsis; /* Adiciona "..." ao texto excedente */
+    margin-bottom: 2px; /* Espaçamento entre os botões */
 }
 
+
+/* Hover para ambos os botões */
 .buy-button:hover {
-    background-color: #92b68a;
+    background-color: #91D88F; /* Verde mais escuro no hover */
+    transform: scale(1.05); /* Efeito de zoom */
 }
-
