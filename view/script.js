@@ -292,20 +292,94 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+// Função para carregar produtos por nome
 async function loadProducts() {
+    const searchQuery = document.getElementById('searchInput').value; // Obtém o valor do campo de busca
+
+    if (!searchQuery) {
+        return; // Sai se o campo de busca estiver vazio
+    }
+
     try {
-        const response = await fetch('http://localhost:3000/api/produtos');
+        const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${encodeURIComponent(searchQuery)}`);
         const products = await response.json();
         const productGrid = document.getElementById('productGrid');
+
         productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
 
         if (products.length === 0) {
-            productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+            productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
         } else {
             products.forEach(product => {
                 const productItem = document.createElement('div');
                 productItem.className = 'product-item';
                 productItem.innerHTML = `
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="/${product.imagem}" alt="${product.nome}" class="product-image"/>
+                        </div>
+                        <h3 class="product-name">${product.nome}</h3>
+                        <p class="product-price">R$ ${product.preco.toFixed(2)}</p>
+                        <button class="buy-button">Comprar</button>
+                    </div>
+                `;
+
+                // Adiciona o evento de clique ao botão "Comprar"
+                const buyButton = productItem.querySelector('.buy-button');
+                buyButton.addEventListener('click', () => {
+                    const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
+                    window.location.href = url;
+                });
+
+                productGrid.appendChild(productItem);
+            });
+        }
+    } catch (error) {
+        // Erro silencioso
+    }
+}
+
+let allProducts = [];
+
+// Função para carregar todos os produtos ao iniciar
+async function loadAllProducts() {
+    try {
+        const response = await fetch('http://localhost:3000/api/produtos');
+        const products = await response.json();
+        allProducts = products; // Salva todos os produtos na variável global
+        renderProducts(allProducts); // Renderiza todos os produtos inicialmente
+    } catch (error) {
+        // Erro silencioso
+    }
+}
+
+// Função para carregar produtos filtrados por nome
+function loadProducts() {
+    const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase(); // Obtém o valor do campo de busca
+
+    if (!searchQuery) {
+        renderProducts(allProducts); // Renderiza todos os produtos se a pesquisa estiver vazia
+        return;
+    }
+
+    const filteredProducts = allProducts.filter(product =>
+        product.nome.toLowerCase().includes(searchQuery)
+    );
+    renderProducts(filteredProducts); // Renderiza os produtos filtrados
+}
+
+// Função para renderizar os produtos na página
+function renderProducts(products) {
+    const productGrid = document.getElementById('productGrid');
+    productGrid.innerHTML = ''; // Limpa o grid anterior
+
+    if (products.length === 0) {
+        productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
+    } else {
+        products.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.className = 'product-item';
+            productItem.innerHTML = `
                 <div class="product-card">
                     <div class="product-image-container">
                         <img src="/${product.imagem}" alt="${product.nome}" class="product-image"/>
@@ -316,28 +390,43 @@ async function loadProducts() {
                 </div>
             `;
 
-                // Adicione o evento de clique ao botão "Comprar"
-                const buyButton = productItem.querySelector('.buy-button');
-                buyButton.addEventListener('click', () => {
-                    console.log(`Estoque enviado: ${product.estoque}`); // Verifica o valor antes do redirecionamento
-                    const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
-                    window.location.href = url;
-                });
-                
-                
-                
-                
-                
-
-                productGrid.appendChild(productItem);
+            // Adiciona o evento de clique ao botão "Comprar"
+            const buyButton = productItem.querySelector('.buy-button');
+            buyButton.addEventListener('click', () => {
+                const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
+                window.location.href = url;
             });
-        }
-    } catch (error) {
-        console.error('Erro ao carregar produtos:', error);
-    }
-    console.log(`Estoque enviado: ${product.estoque}`);
 
+            productGrid.appendChild(productItem);
+        });
+    }
 }
+
+// Adiciona eventos e carrega os produtos ao iniciar
+document.addEventListener("DOMContentLoaded", function () {
+    const searchButton = document.getElementById('searchButton'); // Botão de busca
+    const searchInput = document.getElementById('searchInput');  // Campo de busca
+
+    if (searchButton) {
+        searchButton.addEventListener('click', loadProducts);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', loadProducts); // Filtra enquanto o usuário digita
+    }
+
+    loadAllProducts(); // Carrega todos os produtos ao iniciar
+})
+
+// Adiciona evento ao botão de busca
+document.addEventListener("DOMContentLoaded", function () {
+    const searchButton = document.getElementById('searchButton'); // Botão de busca
+    if (searchButton) {
+        searchButton.addEventListener('click', loadProducts);
+    }
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
