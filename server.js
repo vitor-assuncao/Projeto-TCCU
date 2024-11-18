@@ -67,11 +67,12 @@ app.post('/api/produtos', upload.single('imagem'), (req, res) => {
 
 
 // Rota para buscar produtos com base no nome
+// Rota para buscar produtos apenas pelo nome
 app.get('/api/produtos/search', (req, res) => {
     const { nome } = req.query;
-    
+
     if (!nome) {
-        return res.status(400).json({ error: 'Parâmetro de busca não fornecido' });
+        return res.status(400).json({ error: 'Parâmetro "nome" é obrigatório' });
     }
 
     const sql = 'SELECT * FROM Produto WHERE nome LIKE ?';
@@ -84,6 +85,7 @@ app.get('/api/produtos/search', (req, res) => {
         }
     });
 });
+
 
 
 // Rota para registro de usuário
