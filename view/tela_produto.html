@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;700&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="icon" href="icons/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="styles_tela_produto.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Header com logo e barra de navegação -->
@@ -35,49 +35,82 @@
         </div>
     </header>
 
+    <!-- Modal de Login -->
+    <div id="loginModal" class="modal hidden">
+        <img src="icons/Polygon 1.png" alt="Polygon Icon" class="polygon-icon">
+        <form id="loginForm">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="Email" required>
+    
+            <label for="loginSenha">Senha</label>
+            <input type="password" id="loginSenha" placeholder="Senha" required>
+    
+            <button type="submit">Entrar</button>
+    
+            <p>Não tem uma conta? <a href="#" id="showRegisterLink">Cadastre-se</a></p>
+        </form>
+    </div>
+    
+
+    <!-- Modal de Cadastro -->
+    <div id="registerModal" class="modal hidden">
+        <img src="icons/Polygon 1.png" alt="Polygon Icon" class="polygon-icon">
+        <form id="registerForm">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Nome" required>
+        
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+        
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Senha" required>
+        
+            <button type="submit">Registrar</button>
+    
+            <p>Já tem uma conta? <a href="#" id="showLoginLink">Entrar</a></p> <!-- Link para login -->
+        </form>
+    </div>
+    
+    <!-- Modal de Usuário Logado -->
+    <div id="loggedInModal" class="modal hidden">
+        <img src="icons/Polygon 1.png" alt="Polygon Icon" class="polygon-icon">
+        <div id="userProfile">
+            <div class="profile-info">
+                <img src="icons/User.png" alt="User Icon" class="profile-icon">
+                <p id="userProfileName">Nome do Usuário</p> <!-- Esse é o elemento que será truncado -->
+            </div>
+            <button class="product-button" onclick="openProductForm()">VENDER PRODUTO</button>
+            <button class="logout-button" onclick="logoutUser()">LOGOUT</button>
+        </div>
+    </div>
+
     <!-- Detalhes do Produto -->
-    <section class="product-details">
-        <div class="product-container">
-            <!-- Imagem do Produto -->
-            <div class="product-image-container">
-                <img src="icons/default-product.png" alt="Imagem do Produto" class="product-image">
+    <section class="product-details2">
+        <!-- Imagem do Produto -->
+        <div class="product-image-container2">
+            <img id="productImage" src="icons/default-product.png" alt="Imagem do Produto" class="product-image">
+        </div>
+
+        <!-- Informações do Produto -->
+        <div class="product-info2">
+            <h1 id="productName">Carregando...</h1>
+            <p id="productPrice" class="product-price">R$ 0,00</p>
+            <p id="productStock" class="product-stock">Estoque: 0 unidades</p>
+
+
+            <!-- Botão de Ação -->
+            <div class="product-actions2">
+                <button class="buy-button2">Comprar Agora</button>
             </div>
 
-            <!-- Informações do Produto -->
-            <div class="product-info">
-                <h1 id="productName">Nome do Produto</h1>
-                <p id="productCategory" class="product-category">Categoria: Fone de Ouvido</p>
-                <p id="productPrice" class="product-price">R$ 86,69</p>
-                <p id="productDescription" class="product-description">Descrição detalhada do produto.</p>
-
-                <!-- Botões de Ação -->
-                <div class="product-actions">
-                    <button class="buy-button">Comprar Agora</button>
-                    <button class="add-to-cart-button">Adicionar ao Carrinho</button>
-                </div>
+            <!-- Descrição do Produto -->
+            <div class="product-description2">
+                <p id="productDescription">Carregando descrição do produto...</p>
             </div>
         </div>
     </section>
 
-    <script>
-        // Exemplo de carregamento dinâmico do produto
-        document.addEventListener('DOMContentLoaded', () => {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-
-            const productName = urlParams.get('name');
-            const productCategory = urlParams.get('category');
-            const productPrice = urlParams.get('price');
-            const productDescription = urlParams.get('description');
-
-            if (productName) {
-                document.getElementById('productName').textContent = productName;
-                document.getElementById('productCategory').textContent = `Categoria: ${productCategory}`;
-                document.getElementById('productPrice').textContent = `R$ ${productPrice}`;
-                document.getElementById('productDescription').textContent = productDescription;
-            }
-        });
-    </script>
+    <!-- Importa o script -->
+    <script src="script.js"></script>
 </body>
 </html>
-

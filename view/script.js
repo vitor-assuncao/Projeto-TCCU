@@ -319,9 +319,15 @@ async function loadProducts() {
                 // Adicione o evento de clique ao botão "Comprar"
                 const buyButton = productItem.querySelector('.buy-button');
                 buyButton.addEventListener('click', () => {
-                    const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&category=${encodeURIComponent(product.categoria)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}`;
+                    console.log(`Estoque enviado: ${product.estoque}`); // Verifica o valor antes do redirecionamento
+                    const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
                     window.location.href = url;
                 });
+                
+                
+                
+                
+                
 
                 productGrid.appendChild(productItem);
             });
@@ -329,10 +335,43 @@ async function loadProducts() {
     } catch (error) {
         console.error('Erro ao carregar produtos:', error);
     }
-}
+    console.log(`Estoque enviado: ${product.estoque}`);
 
-function openProductPage(name, category, price, description, imagemProduto) {
-    const url = `tela_produto.html?name=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}&description=${encodeURIComponent(description)}&image=${encodeURIComponent(imagemProduto)}`;
-    window.location.href = url;
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
 
+    const productName = urlParams.get('name');
+    const productPrice = urlParams.get('price');
+    const productDescription = urlParams.get('description');
+    const productImage = urlParams.get('image');
+    const productStock = urlParams.get('stock'); // Novo campo para estoque
+
+    if (productName) {
+        document.getElementById('productName').textContent = productName;
+        document.getElementById('productPrice').textContent = `R$ ${productPrice || '0,00'}`;
+        document.getElementById('productStock').textContent = `Estoque: ${productStock || '0'} unidades`; // Atualiza o estoque
+        document.getElementById('productDescription').textContent = productDescription || 'Sem descrição disponível';
+
+
+        const imageElement = document.querySelector('#productImage');
+        if (productImage) {
+            imageElement.src = `/${productImage}`;
+            imageElement.alt = productName;
+        } else {
+            imageElement.src = 'icons/default-product.png'; // Imagem padrão se não houver
+            imageElement.alt = 'Imagem padrão';
+        }
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const productGrid = document.getElementById('productGrid');
+    
+    if (productGrid) {
+        loadProducts();
+    } else {
+        console.warn("Elemento productGrid não encontrado. Verifique se ele existe na página atual.");
+    }
+});
