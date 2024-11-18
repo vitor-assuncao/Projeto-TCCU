@@ -315,12 +315,24 @@ async function loadProducts() {
                     <button class="buy-button">Comprar</button>
                 </div>
             `;
-            
+
+                // Adicione o evento de clique ao botão "Comprar"
+                const buyButton = productItem.querySelector('.buy-button');
+                buyButton.addEventListener('click', () => {
+                    const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&category=${encodeURIComponent(product.categoria)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}`;
+                    window.location.href = url;
+                });
+
                 productGrid.appendChild(productItem);
             });
         }
     } catch (error) {
         console.error('Erro ao carregar produtos:', error);
     }
+}
+
+function openProductPage(name, category, price, description, imagemProduto) {
+    const url = `tela_produto.html?name=${encodeURIComponent(name)}&category=${encodeURIComponent(category)}&price=${encodeURIComponent(price)}&description=${encodeURIComponent(description)}&image=${encodeURIComponent(imagemProduto)}`;
+    window.location.href = url;
 }
 
