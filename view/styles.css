@@ -697,8 +697,7 @@ footer {
 }
 
 
-.buy-button,
-.add-to-cart-button {
+.buy-button {
     font-family: 'Source Serif Pro', serif; /* Fonte desejada */
     font-weight: 400; /* Regular */
     font-size: 1rem; /* Tamanho do texto */
@@ -718,14 +717,9 @@ footer {
     margin-bottom: 2px; /* Espaçamento entre os botões */
 }
 
-.add-to-cart-button {
-    background-color: #9fff98; /* Verde mais claro */
-    border: 2px solid #8ED693; /* Verde mais escuro na borda */
-}
 
 /* Hover para ambos os botões */
-.buy-button:hover,
-.add-to-cart-button:hover {
+.buy-button:hover {
     background-color: #91D88F; /* Verde mais escuro no hover */
     transform: scale(1.05); /* Efeito de zoom */
 }

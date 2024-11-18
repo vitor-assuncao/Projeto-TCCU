@@ -313,7 +313,6 @@ async function loadProducts() {
                     <h3 class="product-name">${product.nome}</h3>
                     <p class="product-price">R$ ${product.preco.toFixed(2)}</p>
                     <button class="buy-button">Comprar</button>
-                    <button type="button" class="add-to-cart-button">Adicionar ao Carrinho</button>
                 </div>
             `;
             
@@ -325,12 +324,3 @@ async function loadProducts() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const addToCartButton = document.querySelector(".add-to-cart-button");
-
-    if (addToCartButton) {
-        addToCartButton.addEventListener("click", function () {
-            alert("Produto adicionado ao carrinho!"); // Substitua isso pela lógica real
-        });
-    }
-});
