@@ -12,6 +12,7 @@
 </head>
 <body>
     <!-- Header com logo e barra de navegação -->
+    <a href="index.html" class="back-button3"><i class="fas fa-arrow-left"></i> </a> 
     <header class="top-header">
         <div class="header-content">
             <!-- Logo -->
@@ -30,7 +31,8 @@
             <div class="header-icons">
                 <a href="#"><img src="icons/Phone.png" alt="Phone"></a>
                 <button id="userIcon"><img src="icons/User.png" alt="User"></button>
-                <a href="#"><img src="icons/Shopping cart.png" alt="Cart"></a>
+                <a id="cartIcon" href="#"><img src="icons/Shopping cart.png" alt="Cart"></a>
+
             </div>
         </div>
     </header>
@@ -100,7 +102,7 @@
 
             <!-- Botão de Ação -->
             <div class="product-actions2">
-                <button class="buy-button2">Comprar Agora</button>
+                <button class="buy-button2">Adicionar ao Carrinho</button>
             </div>
 
             <!-- Descrição do Produto -->
@@ -110,6 +112,24 @@
         </div>
     </section>
 
+<!-- Modal do Carrinho -->
+<!-- Overlay para escurecer o fundo -->
+<div id="cartOverlay" class="overlay hidden"></div>
+
+<div id="cart" class="cart hidden">
+    <button id="closeCart" class="close-cart">&times;</button>
+    <h2>Meu Carrinho</h2>
+    <div id="cartItems" class="cart-items">
+        <p class="empty-cart">Sua sacola está vazia.</p>
+    </div>
+    <div class="cart-footer">
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cartTotal">R$ 0,00</span>
+        </div>
+        <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
+    </div>
+</div>
     <!-- Importa o script -->
     <script src="script.js"></script>
 </body>

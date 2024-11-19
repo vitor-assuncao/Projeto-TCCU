@@ -91,17 +91,45 @@ app.get('/api/produtos/search', (req, res) => {
 // Rota para registro de usuário
 app.post('/api/usuarios/register', async (req, res) => {
     const { nome, email, senha } = req.body;
-    const hashedPassword = await bcrypt.hash(senha, 10);
-    const sql = 'INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)';
-    db.query(sql, [nome, email, hashedPassword], (err, result) => {
-        if (err) {
-            console.error('Erro ao registrar usuário:', err);
-            res.status(500).json({ error: 'Erro ao registrar usuário' });
-        } else {
-            res.status(201).json({ message: 'Usuário registrado com sucesso' });
-        }
-    });
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(senha, 10);
+
+        db.query(
+            'INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)',
+            [nome, email, hashedPassword],
+            (err, result) => {
+                if (err) {
+                    console.error('Erro ao registrar usuário:', err);
+
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        return res.status(400).json({ error: 'E-mail já cadastrado.' });
+                    }
+
+                    return res.status(500).json({ error: 'Erro ao registrar usuário no banco de dados.' });
+                }
+
+                const userId = result.insertId;
+                const token = jwt.sign({ id: userId }, 'seu_segredo', { expiresIn: '1h' });
+
+                res.status(201).json({
+                    message: 'Usuário registrado com sucesso!',
+                    token,
+                    user: { id: userId, nome, email },
+                });
+            }
+        );
+    } catch (error) {
+        console.error('Erro inesperado no servidor:', error);
+        res.status(500).json({ error: 'Erro interno no servidor.' });
+    }
 });
+
+
 
 // Rota para login de usuário
 app.post('/api/usuarios/login', (req, res) => {
@@ -120,9 +148,14 @@ app.post('/api/usuarios/login', (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, 'seu_segredo', { expiresIn: '1h' });
-        res.json({ token, user: { id: user.id, nome: user.nome, email: user.email } });
+        res.json({
+            token,
+            user: { id: user.id, nome: user.nome, email: user.email },
+        });
     });
 });
+
+
 
 // Rota para adicionar item ao carrinho
 app.post('/api/carrinho/adicionar', (req, res) => {
@@ -213,6 +246,43 @@ app.get('/api/produtos', (req, res) => {
         }
     });
 });
+
+app.get('/api/carrinho', (req, res) => {
+    const { usuarioId } = req.query;
+
+    console.log('Requisição para /api/carrinho. ID do Usuário:', usuarioId);
+
+    if (!usuarioId) {
+        console.error('ID do usuário não fornecido.');
+        return res.status(400).json({ error: 'O ID do usuário é obrigatório.' });
+    }
+
+    const sql = `
+        SELECT p.id, p.nome, p.preco, p.imagem
+        FROM Produto p
+        JOIN Carrinho_Produto cp ON p.id = cp.produto_id
+        JOIN Carrinho c ON cp.carrinho_id = c.id
+        WHERE c.usuario_id = ?;
+    `;
+
+    db.query(sql, [usuarioId], (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar produtos do carrinho:', err);
+            return res.status(500).json({ error: 'Erro ao buscar produtos do carrinho.' });
+        }
+
+        console.log('Produtos retornados do carrinho:', results);
+        res.status(200).json(results);
+    });
+});
+
+
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+});
+
+
 
 
 // Iniciar o servidor

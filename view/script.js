@@ -1,7 +1,7 @@
 let isLoggedIn = false; // Variável para controlar o estado de login
 
 async function registerUser(event) {
-    event.preventDefault();
+    event.preventDefault(); // Impede o comportamento padrão do formulário
 
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
@@ -20,13 +20,18 @@ async function registerUser(event) {
         });
 
         const data = await response.json();
+
         if (response.ok) {
             alert('Usuário registrado com sucesso!');
+
+            // Salva os dados do usuário no localStorage
             localStorage.setItem('token', data.token);
+            localStorage.setItem('usuarioId', data.user.id);
+            localStorage.setItem('userName', data.user.nome);
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userName', nome);
-            document.getElementById('registerForm').reset();
-            showLoggedInModal(nome);
+
+            // Atualiza a interface para o estado logado
+            showLoggedInModal(data.user.nome);
         } else {
             alert(data.error || 'Erro ao registrar usuário.');
         }
@@ -35,6 +40,17 @@ async function registerUser(event) {
         alert('Erro ao registrar usuário.');
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const userName = localStorage.getItem('userName');
+    
+    if (isLoggedIn && userName) {
+        showLoggedInModal(userName); // Mostra o modal de usuário logado
+    }
+});
+
+
 
 async function loginUser(event) {
     event.preventDefault();
@@ -57,10 +73,14 @@ async function loginUser(event) {
         const data = await response.json();
         if (response.ok) {
             alert('Login realizado com sucesso!');
+            // Salve o ID do usuário no localStorage
+            console.log('Dados recebidos do servidor:', data); // Para depuração
+            localStorage.setItem('usuarioId', data.user.id); // Certifique-se de que 'data.user.id' está correto
             localStorage.setItem('token', data.token);
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userName', data.user.nome);
-            document.getElementById('loginForm').reset();
+
+            // Mostra o modal logado
             showLoggedInModal(data.user.nome);
         } else {
             alert(data.error || 'Erro ao fazer login.');
@@ -69,7 +89,9 @@ async function loginUser(event) {
         console.error('Erro ao fazer login:', error);
         alert('Erro ao fazer login.');
     }
+    console.log('Dados recebidos do servidor:', data)
 }
+
 
 // Função para exibir o modal de usuário logado
 function showLoggedInModal(userName) {
@@ -79,19 +101,24 @@ function showLoggedInModal(userName) {
     const userProfileName = document.getElementById('userProfileName');
 
     if (!loginModal || !registerModal || !loggedInModal || !userProfileName) {
-        return; // Sai da função se qualquer um dos elementos não existir
+        console.error('Elementos necessários para o modal de login não foram encontrados.');
+        return;
     }
-    
-    // Define o estado de login como true
+
+    // Atualiza o estado para logado
     isLoggedIn = true;
 
-    // Atualiza o nome do usuário no modal logado
+    // Define o nome do usuário
     userProfileName.textContent = `Perfil: ${userName}`;
 
-    // Esconde os modais de login e registro e exibe o modal de usuário logado
+    // Esconde os modais de login e registro
     loginModal.classList.add('hidden');
     registerModal.classList.add('hidden');
+
+    // Mostra o modal de usuário logado
+    loggedInModal.classList.remove('hidden');
 }
+
 
 // Função para abrir a página de inserção de produto
 function openProductForm() {
@@ -463,4 +490,87 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.warn("Elemento productGrid não encontrado. Verifique se ele existe na página atual.");
     }
+});
+
+// Referências ao carrinho
+document.addEventListener("DOMContentLoaded", () => {
+    const cartIcon = document.querySelector('#cartIcon'); // Ícone do carrinho
+    const cartModal = document.querySelector('#cart'); // Modal do carrinho
+    const cartOverlay = document.querySelector('#cartOverlay'); // Overlay escuro
+    const cartItemsContainer = document.querySelector('#cartItems'); // Container dos itens
+    const cartTotalElement = document.querySelector('#cartTotal'); // Total do carrinho
+    const closeCartButton = document.querySelector('#closeCart'); // Botão de fechar o carrinho
+
+    if (!cartIcon) {
+        console.error('Elemento #cartIcon não encontrado no DOM.');
+        return;
+    }
+
+    // Evento ao clicar no ícone do carrinho
+    cartIcon.addEventListener('click', async () => {
+        console.log('Ícone do carrinho clicado!');
+        const usuarioId = localStorage.getItem('usuarioId');
+    
+        if (!usuarioId) {
+            alert('Você precisa estar logado para ver o carrinho.');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/carrinho?usuarioId=${usuarioId}`);
+            const data = await response.json();
+            console.log('Itens do carrinho recebidos:', data);
+    
+            cartItemsContainer.innerHTML = '';
+    
+            if (data.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart">Sua sacola está vazia.</p>';
+                cartTotalElement.textContent = 'R$ 0,00';
+            } else {
+                let total = 0;
+    
+                data.forEach((item) => {
+                    total += item.preco;
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <img src="/${item.imagem}" alt="${item.nome}" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h4>${item.nome}</h4>
+                                <p>R$ ${item.preco.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+    
+                cartTotalElement.textContent = `R$ ${total.toFixed(2)}`;
+            }
+    
+            // Exibe o modal do carrinho e o overlay
+            cartModal.classList.add('open');
+            cartModal.classList.remove('hidden');
+            cartOverlay.classList.add('open');
+            cartOverlay.classList.remove('hidden');
+            console.log('Exibindo o modal do carrinho');
+        } catch (error) {
+            console.error('Erro ao carregar o carrinho:', error);
+        }
+    });
+
+    // Fecha o modal do carrinho e remove o overlay
+    closeCartButton.addEventListener('click', () => {
+        console.log('Fechando o modal do carrinho');
+        cartModal.classList.add('hidden');
+        cartModal.classList.remove('open');
+        cartOverlay.classList.add('hidden');
+        cartOverlay.classList.remove('open');
+    });
+
+    // Fecha o carrinho ao clicar fora do modal
+    cartOverlay.addEventListener('click', () => {
+        console.log('Fechando o modal do carrinho pelo overlay');
+        cartModal.classList.add('hidden');
+        cartModal.classList.remove('open');
+        cartOverlay.classList.add('hidden');
+        cartOverlay.classList.remove('open');
+    });
 });
