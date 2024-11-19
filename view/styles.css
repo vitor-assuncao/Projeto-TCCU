@@ -880,8 +880,14 @@ footer {
     font-size: 1.5rem; /* Tamanho da seta */
     color: #000; /* Cor preta */
 }
+/* Estilos gerais */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
 
-/* Overlay escuro */
+/* Carrinho lateral */
 .cart {
     position: fixed;
     top: 0;
@@ -901,6 +907,7 @@ footer {
     transform: translateX(0); /* Mostra o carrinho */
 }
 
+/* Overlay escuro */
 .overlay {
     position: fixed;
     top: 0;
@@ -916,36 +923,71 @@ footer {
     display: block; /* Mostra o overlay */
 }
 
-.cart.open {
-    transform: translateX(0);
-}
-
-.cart.open {
-    transform: translateX(0); /* Modal visível */
-}
-
-.hidden {
-    display: none; /* Adiciona visibilidade controlada */
-}
-
+/* Título do carrinho */
 .cart h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
 }
 
+/* Itens do carrinho */
 .cart-items {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.empty-cart {
-    text-align: center;
-    font-size: 1rem;
-    color: #666;
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
 }
 
+.cart-item-image-container {
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.cart-item-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.cart-item-details {
+    flex-grow: 1;
+}
+
+.cart-item-name {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.cart-item-price {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 5px 0;
+}
+
+.remove-item-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.remove-item-button:hover {
+    background-color: #c0392b;
+}
+
+/* Total e botão de finalização */
 .cart-footer {
     position: absolute;
     bottom: 20px;
@@ -976,7 +1018,7 @@ footer {
     background-color: #333;
 }
 
-/* Botão de Fechar */
+/* Botão de fechar */
 .close-cart {
     position: absolute;
     top: 10px;

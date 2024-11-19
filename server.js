@@ -161,12 +161,10 @@ app.post('/api/usuarios/login', (req, res) => {
 app.post('/api/carrinho/adicionar', (req, res) => {
     const { usuarioId, produtoId } = req.body;
 
-    // Validação: Verifique se os valores foram enviados
     if (!usuarioId || !produtoId) {
         return res.status(400).json({ error: 'Campos usuarioId e produtoId são obrigatórios' });
     }
 
-    // Verifica se o carrinho do usuário já existe
     const checkCarrinhoSql = 'SELECT id FROM Carrinho WHERE usuario_id = ?';
     db.query(checkCarrinhoSql, [usuarioId], (err, results) => {
         if (err) {
@@ -174,7 +172,6 @@ app.post('/api/carrinho/adicionar', (req, res) => {
             return res.status(500).json({ error: 'Erro ao verificar o carrinho' });
         }
 
-        // Se o carrinho não existir, cria um novo
         let carrinhoId = results.length > 0 ? results[0].id : null;
         if (!carrinhoId) {
             const createCarrinhoSql = 'INSERT INTO Carrinho (usuario_id) VALUES (?)';
@@ -184,21 +181,15 @@ app.post('/api/carrinho/adicionar', (req, res) => {
                     return res.status(500).json({ error: 'Erro ao criar carrinho' });
                 }
                 carrinhoId = result.insertId;
-
-                // Insere o produto no carrinho
                 inserirProdutoCarrinho(carrinhoId, produtoId, res);
             });
         } else {
-            // Se o carrinho já existe, insere o produto
             inserirProdutoCarrinho(carrinhoId, produtoId, res);
         }
     });
 });
 
-// Função auxiliar para inserir o produto no carrinho
 function inserirProdutoCarrinho(carrinhoId, produtoId, res) {
-    console.log('Inserindo produto no carrinho:', { carrinhoId, produtoId }); // Log para depuração
-
     const addProdutoSql = 'INSERT INTO Carrinho_Produto (carrinho_id, produto_id) VALUES (?, ?)';
     db.query(addProdutoSql, [carrinhoId, produtoId], (err) => {
         if (err) {
@@ -208,6 +199,7 @@ function inserirProdutoCarrinho(carrinhoId, produtoId, res) {
         res.status(200).json({ message: 'Produto adicionado ao carrinho com sucesso' });
     });
 }
+
 
 
 // Rota para remover item do carrinho
@@ -234,6 +226,29 @@ app.delete('/api/carrinho/remover', (req, res) => {
     });
 });
 
+app.get('/api/produto/:id', (req, res) => {
+    console.log('Rota /api/produto/:id acessada com ID:', req.params.id);
+
+    const productId = req.params.id;
+
+    const sql = 'SELECT * FROM Produto WHERE id = ?';
+    db.query(sql, [productId], (err, result) => {
+        if (err) {
+            console.error('Erro ao buscar produto:', err);
+            return res.status(500).json({ error: 'Erro ao buscar produto.' });
+        }
+
+        if (result.length === 0) {
+            console.log('Produto não encontrado para o ID:', productId);
+            return res.status(404).json({ error: 'Produto não encontrado.' });
+        }
+
+        console.log('Produto encontrado:', result[0]);
+        res.status(200).json(result[0]);
+    });
+});
+
+
 // Rota para obter todos os produtos
 app.get('/api/produtos', (req, res) => {
     const sql = 'SELECT * FROM Produto';
@@ -246,6 +261,8 @@ app.get('/api/produtos', (req, res) => {
         }
     });
 });
+
+
 
 app.get('/api/carrinho', (req, res) => {
     const { usuarioId } = req.query;

@@ -413,21 +413,46 @@ function renderProducts(products) {
                     </div>
                     <h3 class="product-name">${product.nome}</h3>
                     <p class="product-price">R$ ${product.preco.toFixed(2)}</p>
-                    <button class="buy-button">Comprar</button>
+                    <button class="buy-button" 
+                        data-id="${product.id}" 
+                        data-name="${product.nome}" 
+                        data-price="${product.preco}" 
+                        data-description="${product.descricao}" 
+                        data-image="${product.imagem}" 
+                        data-stock="${product.estoque}">
+                        Comprar
+                    </button>
                 </div>
             `;
 
-            // Adiciona o evento de clique ao botão "Comprar"
-            const buyButton = productItem.querySelector('.buy-button');
-            buyButton.addEventListener('click', () => {
-                const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
-                window.location.href = url;
-            });
-
             productGrid.appendChild(productItem);
+        });
+
+        // Adiciona eventos de clique aos botões "Comprar"
+        const buyButtons = document.querySelectorAll('.buy-button');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const productId = button.getAttribute('data-id');
+                console.log(`Produto ID capturado ao clicar: ${productId}`);
+                const productName = button.getAttribute('data-name');
+                const productPrice = button.getAttribute('data-price');
+                const productDescription = button.getAttribute('data-description');
+                const productImage = button.getAttribute('data-image');
+                const productStock = button.getAttribute('data-stock');
+
+                if (!productId) {
+                    console.error('Erro: ID do produto não encontrado.');
+                    return;
+                }
+
+                // Redireciona para a página do produto com o ID e outros detalhes na URL
+                const productUrl = `tela_produto.html?id=${productId}&name=${encodeURIComponent(productName)}&price=${productPrice}&description=${encodeURIComponent(productDescription)}&image=${encodeURIComponent(productImage)}&stock=${productStock}`;
+                window.location.href = productUrl;
+            });
         });
     }
 }
+
 
 // Adiciona eventos e carrega os produtos ao iniciar
 document.addEventListener("DOMContentLoaded", function () {
@@ -458,18 +483,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
+    // Obtém os parâmetros da URL
+    const productId = urlParams.get('id');
     const productName = urlParams.get('name');
     const productPrice = urlParams.get('price');
     const productDescription = urlParams.get('description');
     const productImage = urlParams.get('image');
-    const productStock = urlParams.get('stock'); // Novo campo para estoque
+    const productStock = urlParams.get('stock');
 
+    // Verifica se o ID do produto foi capturado
+    if (productId) {
+        console.log(`Produto ID capturado: ${productId}`);
+    } else {
+        console.error('Erro: ID do produto não encontrado na URL.');
+    }
+
+    // Atualiza os detalhes do produto na página
     if (productName) {
         document.getElementById('productName').textContent = productName;
         document.getElementById('productPrice').textContent = `R$ ${productPrice || '0,00'}`;
-        document.getElementById('productStock').textContent = `Estoque: ${productStock || '0'} unidades`; // Atualiza o estoque
+        document.getElementById('productStock').textContent = `Estoque: ${productStock || '0'} unidades`;
         document.getElementById('productDescription').textContent = productDescription || 'Sem descrição disponível';
-
 
         const imageElement = document.querySelector('#productImage');
         if (productImage) {
@@ -481,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const productGrid = document.getElementById('productGrid');
@@ -573,4 +608,52 @@ document.addEventListener("DOMContentLoaded", () => {
         cartOverlay.classList.add('hidden');
         cartOverlay.classList.remove('open');
     });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const addToCartButton = document.querySelector('.buy-button2'); // Botão de adicionar ao carrinho
+
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', async () => {
+            const usuarioId = localStorage.getItem('usuarioId'); // ID do usuário logado
+            const productId = new URLSearchParams(window.location.search).get('id'); // ID do produto pela URL
+
+            if (!usuarioId) {
+                alert('Você precisa estar logado para adicionar produtos ao carrinho.');
+                return;
+            }
+
+            if (!productId) {
+                alert('Erro ao obter ID do produto.');
+                return;
+            }
+
+            try {
+                console.log(`Adicionando produto ao carrinho. Usuário: ${usuarioId}, Produto: ${productId}`);
+
+                // Faz a requisição para adicionar o produto ao carrinho
+                const response = await fetch('/api/carrinho/adicionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        usuarioId: usuarioId,
+                        produtoId: productId,
+                    }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('Produto adicionado ao carrinho:', data);
+                    alert('Produto adicionado ao carrinho com sucesso!');
+                } else {
+                    alert(data.error || 'Erro ao adicionar produto ao carrinho.');
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar produto ao carrinho:', error);
+                alert('Erro ao adicionar o produto ao carrinho.');
+            }
+        });
+    }
 });
