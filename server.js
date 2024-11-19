@@ -202,6 +202,7 @@ function inserirProdutoCarrinho(carrinhoId, produtoId, res) {
 
 
 
+
 // Rota para remover item do carrinho
 app.delete('/api/carrinho/remover', (req, res) => {
     const { usuarioId, produtoId } = req.body;
@@ -299,6 +300,49 @@ app.use((req, res, next) => {
     next();
 });
 
+// Rota para atualizar o estoque do produto
+// Rota para atualizar o estoque do produto após a finalização da compra
+app.post('/api/produto/atualizar-estoque', (req, res) => {
+    const { produtoId, quantidade } = req.body; // Recebe o produtoId e a quantidade a ser atualizada
+
+    if (!produtoId || !quantidade) {
+        return res.status(400).json({ error: 'Produto ID e quantidade são necessários.' });
+    }
+
+    // Verifica se a quantidade solicitada é válida
+    const sql = 'UPDATE Produto SET estoque = estoque - ? WHERE id = ?';
+    db.query(sql, [quantidade, produtoId], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar estoque:', err);
+            return res.status(500).json({ error: 'Erro ao atualizar estoque.' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Produto não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Estoque atualizado com sucesso.' });
+    });
+});
+
+
+// Endpoint para remover produto do carrinho
+app.delete('/api/carrinho/remover', (req, res) => {
+    const { usuarioId, produtoId } = req.body;
+
+    if (!usuarioId || !produtoId) {
+        return res.status(400).json({ error: 'Usuário e Produto ID são obrigatórios' });
+    }
+
+    const sql = 'DELETE FROM Carrinho_Produto WHERE carrinho_id = (SELECT id FROM Carrinho WHERE usuario_id = ?) AND produto_id = ?';
+    db.query(sql, [usuarioId, produtoId], (err) => {
+        if (err) {
+            console.error('Erro ao remover produto do carrinho:', err);
+            return res.status(500).json({ error: 'Erro ao remover produto do carrinho' });
+        }
+        res.status(200).json({ message: 'Produto removido do carrinho' });
+    });
+});
 
 
 

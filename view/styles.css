@@ -927,6 +927,7 @@ body {
 .cart h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 /* Itens do carrinho */
@@ -936,18 +937,15 @@ body {
     gap: 10px;
 }
 
+/* Estilização individual dos itens do carrinho */
 .cart-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start; /* Ajuste para alinhamento correto */
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
     margin-bottom: 10px;
-}
-
-.cart-item-image-container {
-    flex-shrink: 0;
-    margin-right: 10px;
+    gap: 10px; /* Espaço entre a imagem e os dados */
 }
 
 .cart-item-image {
@@ -955,16 +953,21 @@ body {
     height: 50px;
     object-fit: cover;
     border-radius: 4px;
+    margin-right: 10px; /* Adiciona espaço entre a imagem e o texto */
 }
 
 .cart-item-details {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Espaço entre o nome e o preço */
 }
 
 .cart-item-name {
     font-size: 1rem;
     font-weight: bold;
     margin: 0;
+    color: #333;
 }
 
 .cart-item-price {
@@ -1028,4 +1031,106 @@ body {
     font-size: 2rem;
     cursor: pointer;
     color: #333;
+}
+
+/* Estilização adicional para garantir responsividade */
+@media (max-width: 600px) {
+    .cart {
+        width: 100%;
+    }
+
+    .cart-item-image {
+        width: 40px;
+        height: 40px;
+    }
+
+    .cart-item-name {
+        font-size: 0.9rem;
+    }
+
+    .cart-item-price {
+        font-size: 0.8rem;
+    }
+}
+
+/* Estilo do Modal de Contato */
+#contactModal {
+    position: absolute;
+    top: 100px; /* Ajuste a posição para aparecer logo abaixo do ícone de telefone */
+    left: 66.5%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 260px;
+    z-index: 1000;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem; /* Ajustei o tamanho da fonte */
+    color: #333;
+    display: none; /* Inicialmente oculto */
+    border: 2px solid #ccc;
+    line-height: 1.5;
+}
+
+/* Seta apontando para o ícone de telefone */
+#contactModal::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent;
+}
+
+/* Estilo das informações de contato */
+.contact-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px; /* Aumentei o espaço abaixo do título */
+    font-weight: bold;
+    color: #2c3e50; /* Cor mais escura para o título */
+}
+
+.contact-info p {
+    font-size: 0.9rem;
+    margin: 10px 0; /* Adicionei mais espaçamento entre os itens */
+    color: #34495e; /* Cor de texto mais suave para os detalhes */
+}
+
+#contactModal button {
+    width: 100%;
+    background-color: #9BCF63; /* Cor verde */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px; /* Espaço entre o conteúdo e o botão */
+    font-size: 0.9rem;
+}
+
+#contactModal button:hover {
+    background-color: #8BB756;
+}
+
+/* Adiciona a classe 'open' para exibir o modal */
+#contactModal.open {
+    display: block;
+}
+
+/* Estilo para a sombra do modal */
+#contactModal .contact-info {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Ajustes no ícone de telefone */
+#phoneIcon {
+    cursor: pointer;
+    font-size: 1.5rem;
 }
