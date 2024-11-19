@@ -1,7 +1,7 @@
 let isLoggedIn = false; // Variável para controlar o estado de login
 
 async function registerUser(event) {
-    event.preventDefault();
+    event.preventDefault(); // Impede o comportamento padrão do formulário
 
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
@@ -20,13 +20,18 @@ async function registerUser(event) {
         });
 
         const data = await response.json();
+
         if (response.ok) {
             alert('Usuário registrado com sucesso!');
+
+            // Salva os dados do usuário no localStorage
             localStorage.setItem('token', data.token);
+            localStorage.setItem('usuarioId', data.user.id);
+            localStorage.setItem('userName', data.user.nome);
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userName', nome);
-            document.getElementById('registerForm').reset();
-            showLoggedInModal(nome);
+
+            // Atualiza a interface para o estado logado
+            showLoggedInModal(data.user.nome);
         } else {
             alert(data.error || 'Erro ao registrar usuário.');
         }
@@ -35,6 +40,17 @@ async function registerUser(event) {
         alert('Erro ao registrar usuário.');
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const userName = localStorage.getItem('userName');
+    
+    if (isLoggedIn && userName) {
+        showLoggedInModal(userName); // Mostra o modal de usuário logado
+    }
+});
+
+
 
 async function loginUser(event) {
     event.preventDefault();
@@ -57,10 +73,14 @@ async function loginUser(event) {
         const data = await response.json();
         if (response.ok) {
             alert('Login realizado com sucesso!');
+            // Salve o ID do usuário no localStorage
+            console.log('Dados recebidos do servidor:', data); // Para depuração
+            localStorage.setItem('usuarioId', data.user.id); // Certifique-se de que 'data.user.id' está correto
             localStorage.setItem('token', data.token);
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userName', data.user.nome);
-            document.getElementById('loginForm').reset();
+
+            // Mostra o modal logado
             showLoggedInModal(data.user.nome);
         } else {
             alert(data.error || 'Erro ao fazer login.');
@@ -69,7 +89,9 @@ async function loginUser(event) {
         console.error('Erro ao fazer login:', error);
         alert('Erro ao fazer login.');
     }
+    console.log('Dados recebidos do servidor:', data)
 }
+
 
 // Função para exibir o modal de usuário logado
 function showLoggedInModal(userName) {
@@ -79,19 +101,24 @@ function showLoggedInModal(userName) {
     const userProfileName = document.getElementById('userProfileName');
 
     if (!loginModal || !registerModal || !loggedInModal || !userProfileName) {
-        return; // Sai da função se qualquer um dos elementos não existir
+        console.error('Elementos necessários para o modal de login não foram encontrados.');
+        return;
     }
-    
-    // Define o estado de login como true
+
+    // Atualiza o estado para logado
     isLoggedIn = true;
 
-    // Atualiza o nome do usuário no modal logado
+    // Define o nome do usuário
     userProfileName.textContent = `Perfil: ${userName}`;
 
-    // Esconde os modais de login e registro e exibe o modal de usuário logado
+    // Esconde os modais de login e registro
     loginModal.classList.add('hidden');
     registerModal.classList.add('hidden');
+
+    // Mostra o modal de usuário logado
+    loggedInModal.classList.remove('hidden');
 }
+
 
 // Função para abrir a página de inserção de produto
 function openProductForm() {
@@ -386,21 +413,46 @@ function renderProducts(products) {
                     </div>
                     <h3 class="product-name">${product.nome}</h3>
                     <p class="product-price">R$ ${product.preco.toFixed(2)}</p>
-                    <button class="buy-button">Comprar</button>
+                    <button class="buy-button" 
+                        data-id="${product.id}" 
+                        data-name="${product.nome}" 
+                        data-price="${product.preco}" 
+                        data-description="${product.descricao}" 
+                        data-image="${product.imagem}" 
+                        data-stock="${product.estoque}">
+                        Comprar
+                    </button>
                 </div>
             `;
 
-            // Adiciona o evento de clique ao botão "Comprar"
-            const buyButton = productItem.querySelector('.buy-button');
-            buyButton.addEventListener('click', () => {
-                const url = `tela_produto.html?name=${encodeURIComponent(product.nome)}&price=${encodeURIComponent(product.preco)}&description=${encodeURIComponent(product.descricao)}&image=${encodeURIComponent(product.imagem)}&stock=${encodeURIComponent(product.estoque)}`;
-                window.location.href = url;
-            });
-
             productGrid.appendChild(productItem);
+        });
+
+        // Adiciona eventos de clique aos botões "Comprar"
+        const buyButtons = document.querySelectorAll('.buy-button');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const productId = button.getAttribute('data-id');
+                console.log(`Produto ID capturado ao clicar: ${productId}`);
+                const productName = button.getAttribute('data-name');
+                const productPrice = button.getAttribute('data-price');
+                const productDescription = button.getAttribute('data-description');
+                const productImage = button.getAttribute('data-image');
+                const productStock = button.getAttribute('data-stock');
+
+                if (!productId) {
+                    console.error('Erro: ID do produto não encontrado.');
+                    return;
+                }
+
+                // Redireciona para a página do produto com o ID e outros detalhes na URL
+                const productUrl = `tela_produto.html?id=${productId}&name=${encodeURIComponent(productName)}&price=${productPrice}&description=${encodeURIComponent(productDescription)}&image=${encodeURIComponent(productImage)}&stock=${productStock}`;
+                window.location.href = productUrl;
+            });
         });
     }
 }
+
 
 // Adiciona eventos e carrega os produtos ao iniciar
 document.addEventListener("DOMContentLoaded", function () {
@@ -431,18 +483,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
+    // Obtém os parâmetros da URL
+    const productId = urlParams.get('id');
     const productName = urlParams.get('name');
     const productPrice = urlParams.get('price');
     const productDescription = urlParams.get('description');
     const productImage = urlParams.get('image');
-    const productStock = urlParams.get('stock'); // Novo campo para estoque
+    const productStock = urlParams.get('stock');
 
+    // Verifica se o ID do produto foi capturado
+    if (productId) {
+        console.log(`Produto ID capturado: ${productId}`);
+    } else {
+        console.error('Erro: ID do produto não encontrado na URL.');
+    }
+
+    // Atualiza os detalhes do produto na página
     if (productName) {
         document.getElementById('productName').textContent = productName;
         document.getElementById('productPrice').textContent = `R$ ${productPrice || '0,00'}`;
-        document.getElementById('productStock').textContent = `Estoque: ${productStock || '0'} unidades`; // Atualiza o estoque
+        document.getElementById('productStock').textContent = `Estoque: ${productStock || '0'} unidades`;
         document.getElementById('productDescription').textContent = productDescription || 'Sem descrição disponível';
-
 
         const imageElement = document.querySelector('#productImage');
         if (productImage) {
@@ -455,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
 document.addEventListener("DOMContentLoaded", function () {
     const productGrid = document.getElementById('productGrid');
     
@@ -462,5 +524,136 @@ document.addEventListener("DOMContentLoaded", function () {
         loadProducts();
     } else {
         console.warn("Elemento productGrid não encontrado. Verifique se ele existe na página atual.");
+    }
+});
+
+// Referências ao carrinho
+document.addEventListener("DOMContentLoaded", () => {
+    const cartIcon = document.querySelector('#cartIcon'); // Ícone do carrinho
+    const cartModal = document.querySelector('#cart'); // Modal do carrinho
+    const cartOverlay = document.querySelector('#cartOverlay'); // Overlay escuro
+    const cartItemsContainer = document.querySelector('#cartItems'); // Container dos itens
+    const cartTotalElement = document.querySelector('#cartTotal'); // Total do carrinho
+    const closeCartButton = document.querySelector('#closeCart'); // Botão de fechar o carrinho
+
+    if (!cartIcon) {
+        console.error('Elemento #cartIcon não encontrado no DOM.');
+        return;
+    }
+
+    // Evento ao clicar no ícone do carrinho
+    cartIcon.addEventListener('click', async () => {
+        console.log('Ícone do carrinho clicado!');
+        const usuarioId = localStorage.getItem('usuarioId');
+    
+        if (!usuarioId) {
+            alert('Você precisa estar logado para ver o carrinho.');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/carrinho?usuarioId=${usuarioId}`);
+            const data = await response.json();
+            console.log('Itens do carrinho recebidos:', data);
+    
+            cartItemsContainer.innerHTML = '';
+    
+            if (data.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="empty-cart">Sua sacola está vazia.</p>';
+                cartTotalElement.textContent = 'R$ 0,00';
+            } else {
+                let total = 0;
+    
+                data.forEach((item) => {
+                    total += item.preco;
+                    cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <img src="/${item.imagem}" alt="${item.nome}" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h4>${item.nome}</h4>
+                                <p>R$ ${item.preco.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+    
+                cartTotalElement.textContent = `R$ ${total.toFixed(2)}`;
+            }
+    
+            // Exibe o modal do carrinho e o overlay
+            cartModal.classList.add('open');
+            cartModal.classList.remove('hidden');
+            cartOverlay.classList.add('open');
+            cartOverlay.classList.remove('hidden');
+            console.log('Exibindo o modal do carrinho');
+        } catch (error) {
+            console.error('Erro ao carregar o carrinho:', error);
+        }
+    });
+
+    // Fecha o modal do carrinho e remove o overlay
+    closeCartButton.addEventListener('click', () => {
+        console.log('Fechando o modal do carrinho');
+        cartModal.classList.add('hidden');
+        cartModal.classList.remove('open');
+        cartOverlay.classList.add('hidden');
+        cartOverlay.classList.remove('open');
+    });
+
+    // Fecha o carrinho ao clicar fora do modal
+    cartOverlay.addEventListener('click', () => {
+        console.log('Fechando o modal do carrinho pelo overlay');
+        cartModal.classList.add('hidden');
+        cartModal.classList.remove('open');
+        cartOverlay.classList.add('hidden');
+        cartOverlay.classList.remove('open');
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const addToCartButton = document.querySelector('.buy-button2'); // Botão de adicionar ao carrinho
+
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', async () => {
+            const usuarioId = localStorage.getItem('usuarioId'); // ID do usuário logado
+            const productId = new URLSearchParams(window.location.search).get('id'); // ID do produto pela URL
+
+            if (!usuarioId) {
+                alert('Você precisa estar logado para adicionar produtos ao carrinho.');
+                return;
+            }
+
+            if (!productId) {
+                alert('Erro ao obter ID do produto.');
+                return;
+            }
+
+            try {
+                console.log(`Adicionando produto ao carrinho. Usuário: ${usuarioId}, Produto: ${productId}`);
+
+                // Faz a requisição para adicionar o produto ao carrinho
+                const response = await fetch('/api/carrinho/adicionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        usuarioId: usuarioId,
+                        produtoId: productId,
+                    }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('Produto adicionado ao carrinho:', data);
+                    alert('Produto adicionado ao carrinho com sucesso!');
+                } else {
+                    alert(data.error || 'Erro ao adicionar produto ao carrinho.');
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar produto ao carrinho:', error);
+                alert('Erro ao adicionar o produto ao carrinho.');
+            }
+        });
     }
 });
