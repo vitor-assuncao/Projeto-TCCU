@@ -115,8 +115,6 @@ function showLoggedInModal(userName) {
     loginModal.classList.add('hidden');
     registerModal.classList.add('hidden');
 
-    // Mostra o modal de usuário logado
-    loggedInModal.classList.remove('hidden');
 }
 
 
@@ -656,4 +654,109 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+});
+
+document.getElementById('checkoutButton').addEventListener('click', async function() {
+    const usuarioId = localStorage.getItem('usuarioId'); // Obtém o ID do usuário
+    if (!usuarioId) {
+        alert('Você precisa estar logado para finalizar a compra.');
+        return;
+    }
+
+    try {
+        // Passo 1: Buscar os itens do carrinho
+        const cartItemsResponse = await fetch(`/api/carrinho?usuarioId=${usuarioId}`);
+        const cartItems = await cartItemsResponse.json();
+
+        if (cartItems.length === 0) {
+            alert('Seu carrinho está vazio.');
+            return;
+        }
+
+        // Passo 2: Remover os itens do carrinho
+        const removeItemsPromises = cartItems.map(item => {
+            return fetch('/api/carrinho/remover', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    usuarioId: usuarioId,
+                    produtoId: item.id,
+                }),
+            });
+        });
+
+        // Aguarda a remoção de todos os itens
+        await Promise.all(removeItemsPromises);
+
+        // Passo 3: Exibir mensagem de sucesso
+        alert('Compra finalizada com sucesso!');
+        document.getElementById('cartItems').innerHTML = '<p class="empty-cart">Sua sacola está vazia.</p>';
+        document.getElementById('cartTotal').textContent = 'R$ 0,00';
+
+        // Fechar o carrinho após a finalização da compra
+        document.getElementById('cart').classList.add('hidden');
+        document.getElementById('cartOverlay').classList.add('hidden');  // Agora a tela escura some também
+
+    } catch (error) {
+        console.error('Erro ao finalizar compra:', error);
+        alert('Ocorreu um erro ao finalizar a compra. Tente novamente.');
+    }
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const phoneIcon = document.getElementById('phoneIcon'); // Ícone de telefone
+    const contactModal = document.getElementById('contactModal'); // Modal de contato
+    const closeContactButton = document.getElementById('closeContactButton'); // Botão de fechar o modal
+
+    // Exibe o modal ao clicar no ícone de telefone
+    if (phoneIcon) {
+        phoneIcon.addEventListener('click', function () {
+            contactModal.classList.add('open');
+        });
+    }
+
+    // Fecha o modal ao clicar no botão "Fechar"
+    if (closeContactButton) {
+        closeContactButton.addEventListener('click', function () {
+            contactModal.classList.remove('open');
+        });
+    }
+});
+
+
+// Função para fechar o modal
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add('hidden');
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const phoneIcon = document.getElementById('phoneIcon'); // Ícone de telefone
+    const contactModal = document.getElementById('contactModal'); // Modal de contato
+    const closeContactButton = document.getElementById('closeContactButton'); // Botão de fechar o modal
+
+    // Exibe o modal ao clicar no ícone de telefone
+    if (phoneIcon) {
+        phoneIcon.addEventListener('click', function () {
+            contactModal.classList.add('open');
+        });
+    }
+
+    // Fecha o modal ao clicar no botão "Fechar"
+    if (closeContactButton) {
+        closeContactButton.addEventListener('click', function () {
+            contactModal.classList.remove('open');
+        });
+    }
+
+    // Fecha o modal ao clicar fora dele
+    window.addEventListener('click', function (event) {
+        if (contactModal && !contactModal.contains(event.target) && !phoneIcon.contains(event.target)) {
+            contactModal.classList.remove('open');
+        }
+    });
 });
